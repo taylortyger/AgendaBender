@@ -17,9 +17,11 @@ application with basline functionality.</p>
 
 - Node/Express Project Setup (Complete)
 - Basic CRUD End Points (Complete)
+- Design data model 
 - Implement Database Abstraction Layer
 - Implement In-Memory Data Store
-- Basic React Front End UI 
+- Draw-up/Prototype UI
+- Build Out Basic React Front End UI 
 - Implement testing for each application layer (ideally this will be done in conjuction with implementing each layer)
 
 ### Phase Two
