@@ -17,9 +17,20 @@ class TaskDAO {
     }
 
     newTask(props) {
-        if(!validateTaskProps(props)) return;
+        if(!validateNewTaskProps(props)) return;
         taskID = this.maxID++;
-        this.tasks.push(new Task(taskID, ...props));
+        task = new Task(taskID, ...props);
+        this.tasks.push(task);
+        return task;
+    }
+
+    updateTask(props) {
+        if(!validateUpdateTaskProps(props)) return;
+        task = this.findById(props.id);
+        if(task) {
+            Object.assign(task, props);
+        }
+        return task;
     }
 
     //meant to be private
@@ -33,8 +44,13 @@ class TaskDAO {
         return matches;
     }
     
-    validateTaskProps(props) {
+    validateNewTaskProps(props) {
         if(!props.title || !props.course) return false;
+        return true;
+    }
+    
+    validateUpdateTaskProps(props) {
+        if(!props.id) return false;
         return true;
     }
 }
