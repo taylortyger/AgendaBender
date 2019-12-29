@@ -1,30 +1,14 @@
-const tasks = [
-    {
-        id: 1, 
-        title: "Midterm Exam", 
-        course: "CS5800",
-        deadline: "Tuesday 11/05/2019 9:00:00"
-    },
-    {
-        id: 2, 
-        title: "Assignment 5", 
-        course: "CS5050",
-        deadline: "Friday 11/08/2019 8:30:00"
-    },
-    {
-        id: 3, 
-        title: "Chapter 9", 
-        course: "MSLE3310",
-        deadline: "Thursday 11/07/2019 23:59:00"
-    }
-];
+const TaskRepository = require('../data/TaskRepository');
+const TaskDAO = require('../data/TaskDAO');
+
+const taskRepo = new TaskRepository(new TaskDAO);
 
 const getAll = (req, res) => {
-    res.send(tasks);
+    res.send(taskRepo.getAll());
 };
 
 const getByID = (req, res) => {
-    const task = tasks.find(t => t.id === parseInt(req.params.id));
+    const task = taskRepo.getByID(parseInt(req.params.id));
     if(task) {
         res.send(task);
     } else {
@@ -33,28 +17,26 @@ const getByID = (req, res) => {
 };
 
 const create = (req, res) => {
-    const title = req.body.title;
-    const course = req.body.course;
-    const deadline = req.body.deadline;
-    let task = {
-        id: tasks.length+1,
-        title: title,
-        course: course,
-        deadline: deadline
-    }
-    tasks.push(task);
+    let props = {
+        title: req.body.title,
+        course: req.body.course,
+        deadline: req.body.deadline
+    };
+    task = taskRepo.newTask(props);
     res.json(task);
 };
 
 const updateByID = (req, res) => {
-    const task = tasks.find(t => t.id === parseInt(req.params.id));
-    const title = req.body.title;
-    const course = req.body.course;
-    const deadline = req.body.deadline;
+    let props = {
+        id: parseInt(req.params.id),
+        title: req.body.title,
+        course: req.body.course,
+        deadline: req.body.deadline,
+        completed: req.body.completed,
+        scheduledDate: req.body.scheduledDate
+    }
+    task = taskRepo.update(props);
     if(task) {
-        if(title) task.title = title;
-        if(course) task.course = course;
-        if(deadline) task.deadline = deadline;
         res.send(task);
     } else {
         res.status(404).send("The task wtih the given id was not found.");

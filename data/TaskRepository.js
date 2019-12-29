@@ -12,7 +12,7 @@ class TaskRepository {
     }
 
     update(props) {
-        return this.dao.update(props);
+        return this.dao.updateTask(props);
     }
 
     getByCourse(course) {
@@ -20,7 +20,11 @@ class TaskRepository {
     }
 
     newTask(props) {
-        return this.dao.newTask(props);
+        let task = this.dao.newTask(props);
+        console.log(task);
+        return task;
     }
 
 }
+
+module.exports = TaskRepository;

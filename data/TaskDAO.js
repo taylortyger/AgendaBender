@@ -1,3 +1,4 @@
+const Task = require('./Task');
 // In-memory implementation
 class TaskDAO {
     constructor() {
@@ -17,25 +18,30 @@ class TaskDAO {
     }
 
     newTask(props) {
-        if(!validateNewTaskProps(props)) return;
-        taskID = this.maxID++;
-        task = new Task(taskID, ...props);
+        if(!this.validateNewTaskProps(props)) return;
+        let taskID = ++this.maxID;
+        console.log(props);
+        let task = new Task(taskID, props.title, props.course, props.deadline, props.completed, props.scheduledDate);
         this.tasks.push(task);
         return task;
     }
 
     updateTask(props) {
-        if(!validateUpdateTaskProps(props)) return;
-        task = this.findById(props.id);
+        if(!this.validateUpdateTaskProps(props)) return;
+        let task = this.findById(props.id)[0];
         if(task) {
-            Object.assign(task, props);
+            task.title = props.title || task.title;
+            task.course = props.course || task.course;
+            task.deadline = props.deadline || task.deadline;
+            task.completed = props.completed || task.completed;
+            task.scheduledDate = props.scheduledDate || task.scheduledDate; 
         }
         return task;
     }
 
     //meant to be private
     matchesCriteria(task, criteria) {
-        matches = true;
+        let matches = true;
         for(key in criteria) {
             if (criteria[key] != task[key]){
                 matches = false;
@@ -54,3 +60,5 @@ class TaskDAO {
         return true;
     }
 }
+
+module.exports = TaskDAO;

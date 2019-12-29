@@ -24,3 +24,5 @@ class Task {
         this.title = title;
     }
 }
+
+module.exports = Task;
