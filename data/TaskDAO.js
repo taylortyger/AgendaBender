@@ -20,7 +20,6 @@ class TaskDAO {
     newTask(props) {
         if(!this.validateNewTaskProps(props)) return;
         let taskID = ++this.maxID;
-        console.log(props);
         let task = new Task(taskID, props.title, props.course, props.deadline, props.completed, props.scheduledDate);
         this.tasks.push(task);
         return task;
@@ -36,6 +35,13 @@ class TaskDAO {
             task.completed = props.completed || task.completed;
             task.scheduledDate = props.scheduledDate || task.scheduledDate; 
         }
+        return task;
+    }
+
+    // might be better to just have a delete flag?
+    deleteByID(id) {
+        let task = this.findById(id);
+        this.tasks = this.tasks.filter((task) => task.id != id);
         return task;
     }
 
