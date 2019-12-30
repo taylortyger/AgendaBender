@@ -7,7 +7,7 @@ class TaskDAO {
     }
 
     find(criteria) {
-        if(Object.keys(criteria).length === 0) return this.tasks;
+        if(!criteria || Object.keys(criteria).length === 0) return this.tasks;
         else {
             return this.tasks.filter(task => this.matchesCriteria(task, criteria));
         }
@@ -38,7 +38,7 @@ class TaskDAO {
         return task;
     }
 
-    // might be better to just have a delete flag?
+    // might be better to just have a deleted flag?
     deleteByID(id) {
         let task = this.findById(id);
         this.tasks = this.tasks.filter((task) => task.id != id);
