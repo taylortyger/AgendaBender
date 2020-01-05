@@ -7,22 +7,6 @@ class Task {
         this.completed = completed;
         this.scheduledDate = scheduledDate;
     }
-
-    schedule(date) {
-        // schedule this task for the given date
-    }
-
-    complete() {
-        this.completed = true;
-    }
-
-    uncomplete() {
-        this.completed = false;
-    }
-
-    rename(title) {
-        this.title = title;
-    }
 }
 
 module.exports = Task;
