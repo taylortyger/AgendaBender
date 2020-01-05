@@ -25,6 +25,9 @@ class TaskRepository {
         return task;
     }
 
+    deleteByID(id) {
+        return this.dao.deleteByID(id);
+    }
 }
 
 module.exports = TaskRepository;
