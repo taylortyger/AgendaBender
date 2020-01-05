@@ -12,22 +12,21 @@ const getByID = (req, res) => {
     if(task) {
         res.send(task);
     } else {
-        res.status(404).send("The task wtih the given id was not found.");
+        res.status(404).send("The task with the given id was not found.");
     }
 };
 
 const create = (req, res) => {
-    let props = {
-        title: req.body.title,
-        course: req.body.course,
-        deadline: req.body.deadline
-    };
-    task = taskRepo.newTask(props);
-    res.json(task);
+    res.json(taskRepo.newTask({
+                title: req.body.title,
+                course: req.body.course,
+                deadline: req.body.deadline
+            })
+    );
 };
 
 const updateByID = (req, res) => {
-    let props = {
+    const props = {
         id: parseInt(req.params.id),
         title: req.body.title,
         course: req.body.course,
@@ -35,11 +34,11 @@ const updateByID = (req, res) => {
         completed: req.body.completed,
         scheduledDate: req.body.scheduledDate
     }
-    task = taskRepo.update(props);
+    const task = taskRepo.update(props);
     if(task) {
         res.send(task);
     } else {
-        res.status(404).send("The task wtih the given id was not found.");
+        res.status(404).send("The task with the given id was not found.");
     }
 };
 
@@ -49,7 +48,7 @@ const deleteByID = (req, res) => {
         removedTask = tasks.splice(taskIndex, 1);
         res.send(removedTask);
     } else {
-        res.status(404).send("The task wtih the given id was not found.");
+        res.status(404).send("The task with the given id was not found.");
     }
 };
 
