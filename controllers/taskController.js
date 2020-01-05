@@ -1,7 +1,7 @@
 const TaskRepository = require('../data/TaskRepository');
-const TaskDAO = require('../data/TaskDAO');
+const TaskMemoryDAO = require('../data/TaskMemoryDAO');
 
-const taskRepo = new TaskRepository(new TaskDAO());
+const taskRepo = new TaskRepository(new TaskMemoryDAO());
 
 const getAll = (req, res) => {
   res.send(taskRepo.getAll());

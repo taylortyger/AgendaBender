@@ -11,7 +11,7 @@ const validateNewTaskProps = (props) => (props.title && props.course);
 const validateUpdateTaskProps = (props) => (props.id);
 
 // In-memory implementation
-class TaskDAO {
+class TaskMemoryDAO {
   constructor() {
     this.tasks = [];
     this.maxId = 0;
@@ -63,4 +63,4 @@ class TaskDAO {
   }
 }
 
-module.exports = TaskDAO;
+module.exports = TaskMemoryDAO;
