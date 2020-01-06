@@ -6,9 +6,9 @@ const matchesCriteria = (task, criteria) => Object.keys(criteria).reduce((matchi
   return false;
 }, true);
 
-const validateNewTaskProps = (props) => (props.title && props.course);
+const validateNewTaskProps = (props) => (props && props.title && props.course);
 
-const validateUpdateTaskProps = (props) => (props.id);
+const validateUpdateTaskProps = (props) => (props && props.id);
 
 // In-memory implementation
 class TaskMemoryDAO {
