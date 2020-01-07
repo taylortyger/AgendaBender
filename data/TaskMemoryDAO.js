@@ -25,7 +25,7 @@ class TaskMemoryDAO {
   }
 
   findById(id) {
-    return this.tasks.find((task) => task.id === id);
+    return this.tasks.find((task) => task.id === id) || null;
   }
 
   newTask(props) {
@@ -48,7 +48,7 @@ class TaskMemoryDAO {
     const task = this.findById(props.id);
     return Object.assign(task, {
       ...props.title && { title: props.title },
-      ...props.course && { course: props.title },
+      ...props.course && { course: props.course },
       ...props.deadline && { deadline: props.deadline },
       ...props.completed && { completed: props.completed },
       ...props.scheduledDate && { scheduledDate: props.scheduledDate },

@@ -94,96 +94,189 @@ describe('In-Memory TaskDAO', () => {
     });
   });
   describe('Querying', () => {
-    it('find returns all tasks when no search criteria is used', () => {
-      const dao = new TaskMemoryDAO();
-      for (let i = 1; i <= 10; i++) {
-        dao.newTask({ title: `some task ${i}`, course: `CS500${i}` });
-      }
-      chai.assert.lengthOf(dao.find(), 10);
-      chai.assert.lengthOf(dao.find({}), 10);
-      chai.assert.lengthOf(dao.find(null), 10);
+    describe('find()', () => {
+      it('find returns all tasks when no search criteria is used', () => {
+        const dao = new TaskMemoryDAO();
+        for (let i = 1; i <= 10; i++) {
+          dao.newTask({ title: `some task ${i}`, course: `CS500${i}` });
+        }
+        chai.assert.lengthOf(dao.find(), 10);
+        chai.assert.lengthOf(dao.find({}), 10);
+        chai.assert.lengthOf(dao.find(null), 10);
+      });
+      it('returns an array of all tasks that exactly match single-attribute criteria', () => {
+        const dao = new TaskMemoryDAO();
+        dao.newTask({ title: 'task1', course: 'CS5000', completed: true });
+        dao.newTask({ title: 'task2', course: 'CS4000' });
+        dao.newTask({ title: 'task3', course: 'CS5555' });
+        dao.newTask({ title: 'task4', course: 'CS5000' });
+        dao.newTask({ title: 'task5', course: 'CS5980' });
+        dao.newTask({ title: 'task6', course: 'CS3000' });
+
+        let result = dao.find({ title: 'task4' });
+        chai.assert.isArray(result);
+        chai.assert.lengthOf(result, 1);
+
+        result = dao.find({ course: 'CS5000' });
+        chai.assert.isArray(result);
+        chai.assert.lengthOf(result, 2);
+
+        result = dao.find({ completed: true });
+        chai.assert.isArray(result);
+        chai.assert.lengthOf(result, 1);
+
+        result = dao.find({ completed: false });
+        chai.assert.isArray(result);
+        chai.assert.lengthOf(result, 5);
+      });
+      it('returns an array of all tasks that exactly match multi-attribute criteria', () => {
+        const dao = new TaskMemoryDAO();
+        dao.newTask({ title: 'task1', course: 'CS5000', completed: true });
+        dao.newTask({ title: 'task2', course: 'CS4000' });
+        dao.newTask({ title: 'task3', course: 'CS5555' });
+        dao.newTask({ title: 'task4', course: 'CS5000' });
+        dao.newTask({ title: 'task5', course: 'CS5980' });
+        dao.newTask({ title: 'task6', course: 'CS3000', completed: true });
+        dao.newTask({ title: 'task7', course: 'CS3000' });
+        dao.newTask({ title: 'task8', course: 'CS3000' });
+        dao.newTask({ title: 'task9', course: 'CS3000' });
+
+        let result = dao.find({ title: 'task4', course: 'CS5000' });
+        chai.assert.isArray(result);
+        chai.assert.lengthOf(result, 1);
+
+        result = dao.find({ course: 'CS3000', completed: true });
+        chai.assert.isArray(result);
+        chai.assert.lengthOf(result, 1);
+
+        result = dao.find({ course: 'CS3000', completed: false });
+        chai.assert.isArray(result);
+        chai.assert.lengthOf(result, 3);
+
+        result = dao.find({ title: 'task9', completed: false });
+        chai.assert.isArray(result);
+        chai.assert.lengthOf(result, 1);
+      });
+      it('returns an empty array if no tasks exactly match all the criteria', () => {
+        const dao = new TaskMemoryDAO();
+        dao.newTask({ title: 'task1', course: 'CS5000', completed: true });
+        dao.newTask({ title: 'task2', course: 'CS4000' });
+        dao.newTask({ title: 'task3', course: 'CS5555' });
+        dao.newTask({ title: 'task4', course: 'CS5000' });
+        dao.newTask({ title: 'task5', course: 'CS5980' });
+        dao.newTask({ title: 'task6', course: 'CS3000' });
+
+        let result = dao.find({ title: 'task8' });
+        chai.assert.isArray(result);
+        chai.assert.isEmpty(result);
+
+        result = dao.find({ title: 'task1', course: 'CS4040' });
+        chai.assert.isArray(result);
+        chai.assert.isEmpty(result);
+
+        result = dao.find({ title: 'task1', course: 'CS5000', completed: false });
+        chai.assert.isArray(result);
+        chai.assert.isEmpty(result);
+
+        result = dao.find({ course: 'MS5000' });
+        chai.assert.isArray(result);
+        chai.assert.isEmpty(result);
+
+        result = dao.find({ course: 'CS4000', completed: true });
+        chai.assert.isArray(result);
+        chai.assert.isEmpty(result);
+      });
     });
-    it('returns an array of all tasks that exactly match single-attribute criteria', () => {
-      const dao = new TaskMemoryDAO();
-      dao.newTask({ title: 'task1', course: 'CS5000', completed: true });
-      dao.newTask({ title: 'task2', course: 'CS4000' });
-      dao.newTask({ title: 'task3', course: 'CS5555' });
-      dao.newTask({ title: 'task4', course: 'CS5000' });
-      dao.newTask({ title: 'task5', course: 'CS5980' });
-      dao.newTask({ title: 'task6', course: 'CS3000' });
+    describe('findById()', () => {
+      it('returns a task with the given id if it exists in the tasks array', () => {
+        const dao = new TaskMemoryDAO();
 
-      let result = dao.find({ title: 'task4' });
-      chai.assert.isArray(result);
-      chai.assert.lengthOf(result, 1);
+        let newTask = dao.newTask({ title: 'some task', course: 'CS1111' });
+        let resultTask = dao.findById(newTask.id);
+        chai.assert.isNotNull(resultTask);
+        chai.assert.deepEqual(newTask, resultTask);
 
-      result = dao.find({ course: 'CS5000' });
-      chai.assert.isArray(result);
-      chai.assert.lengthOf(result, 2);
+        newTask = dao.newTask({ title: 'some task2', course: 'CS2222' });
+        resultTask = dao.findById(newTask.id);
+        chai.assert.isNotNull(resultTask);
+        chai.assert.deepEqual(newTask, resultTask);
 
-      result = dao.find({ completed: true });
-      chai.assert.isArray(result);
-      chai.assert.lengthOf(result, 1);
+        newTask = dao.newTask({ title: 'some task3', course: 'CS3333' });
+        resultTask = dao.findById(newTask.id);
+        chai.assert.isNotNull(resultTask);
+        chai.assert.deepEqual(newTask, resultTask);
+      });
+      it('returns null if a task with the given id does not exist in the tasks array', () => {
+        const dao = new TaskMemoryDAO();
 
-      result = dao.find({ completed: false });
-      chai.assert.isArray(result);
-      chai.assert.lengthOf(result, 5);
+        // no tasks added yet
+        chai.assert.isNull(dao.findById(50));
+        chai.assert.isNull(dao.findById(0));
+        chai.assert.isNull(dao.findById(1));
+
+        // with tasks added to tasks array
+        dao.newTask({ title: 't1', course: 'C1' });
+        dao.newTask({ title: 't2', course: 'C2' });
+        dao.newTask({ title: 't3', course: 'C3' });
+        dao.newTask({ title: 't4', course: 'C4' });
+
+        chai.assert.isNull(dao.findById(dao.maxId + 5));
+      });
     });
-    it('returns an array of all tasks that exactly match multi-attribute criteria', () => {
+  });
+  describe('updateTask()', () => {
+    it('should update the provided task properties when a task with the given id exists', () => {
       const dao = new TaskMemoryDAO();
-      dao.newTask({ title: 'task1', course: 'CS5000', completed: true });
-      dao.newTask({ title: 'task2', course: 'CS4000' });
-      dao.newTask({ title: 'task3', course: 'CS5555' });
-      dao.newTask({ title: 'task4', course: 'CS5000' });
-      dao.newTask({ title: 'task5', course: 'CS5980' });
-      dao.newTask({ title: 'task6', course: 'CS3000' });
-      dao.newTask({ title: 'task7', course: 'CS3000', completed: true });
-      dao.newTask({ title: 'task8', course: 'CS3000' });
-      dao.newTask({ title: 'task9', course: 'CS3000' });
 
-      let result = dao.find({ title: 'task4', course: 'CS5000' });
-      chai.assert.isArray(result);
-      chai.assert.lengthOf(result, 1);
+      let newTask = dao.newTask({ title: 'some task', course: 'CS1111' });
+      let props = {
+        id: newTask.id,
+        title: 'new title',
+        course: 'new course',
+        completed: true,
+        deadline: 'December 20, 2020',
+      };
+      let updatedTask = dao.updateTask(props);
+      chai.assert.isNotNull(updatedTask);
+      chai.assert.strictEqual(updatedTask.id, newTask.id);
+      chai.assert.strictEqual(updatedTask.title, 'new title');
+      chai.assert.strictEqual(updatedTask.course, 'new course');
+      chai.assert.isTrue(updatedTask.completed);
+      chai.assert.strictEqual(updatedTask.deadline, 'December 20, 2020');
 
-      result = dao.find({ course: 'CS3000', completed: true });
-      chai.assert.isArray(result);
-      chai.assert.lengthOf(result, 1);
+      newTask = dao.newTask({ title: 'some task 2', course: 'CS2222' });
+      props = { id: newTask.id, title: 'new title 2' };
+      updatedTask = dao.updateTask(props);
+      chai.assert.isNotNull(updatedTask);
+      chai.assert.strictEqual(updatedTask.id, newTask.id);
+      chai.assert.strictEqual(updatedTask.title, 'new title 2');
 
-      result = dao.find({ course: 'CS3000', completed: false });
-      chai.assert.isArray(result);
-      chai.assert.lengthOf(result, 3);
-
-      result = dao.find({ title: 'task9', completed: false });
-      chai.assert.isArray(result);
-      chai.assert.lengthOf(result, 1);
+      newTask = dao.newTask({ title: 'some task 3', course: 'CS3333' });
+      props = { id: newTask.id, course: 'new course id' };
+      updatedTask = dao.updateTask(props);
+      chai.assert.isNotNull(updatedTask);
+      chai.assert.strictEqual(updatedTask.id, newTask.id);
+      chai.assert.strictEqual(updatedTask.course, 'new course id');
     });
-    it('returns an empty array if no tasks exactly match all the criteria', () => {
+    it('should not change properties that are not provided in props object', () => {
       const dao = new TaskMemoryDAO();
-      dao.newTask({ title: 'task1', course: 'CS5000', completed: true });
-      dao.newTask({ title: 'task2', course: 'CS4000' });
-      dao.newTask({ title: 'task3', course: 'CS5555' });
-      dao.newTask({ title: 'task4', course: 'CS5000' });
-      dao.newTask({ title: 'task5', course: 'CS5980' });
-      dao.newTask({ title: 'task6', course: 'CS3000' });
+      // newTask and updatedTask point to the same object... so this might change tests.
+      // such as: chai.assert.strictEqual(updatedTask.id, newTask.id); will ALWAYS be true since 
+      // it points to the same object. 
+      let newTask = dao.newTask({ title: 'some task', course: 'CS1111' });
+      let props = { id: newTask.id, title: 'new title' };
+      let updatedTask = dao.updateTask(props);
+      console.log(newTask);
+      console.log(updatedTask);
+      chai.assert.isNotNull(updatedTask);
+      chai.assert.strictEqual(updatedTask.id, newTask.id);
+      chai.assert.strictEqual(updatedTask.title, newTask.title);
+      chai.assert.strictEqual(updatedTask.course, newTask.course);
+      chai.assert.strictEqual(updatedTask.completed, newTask.completed);
+      chai.assert.strictEqual(updatedTask.deadline, newTask.completed);
+    });
+    it('should return null if props object parameter is not valid (non existent, empty, or no id)', () => {
 
-      let result = dao.find({ title: 'task8' });
-      chai.assert.isArray(result);
-      chai.assert.isEmpty(result);
-
-      result = dao.find({ title: 'task1', course: 'CS4040' });
-      chai.assert.isArray(result);
-      chai.assert.isEmpty(result);
-
-      result = dao.find({ title: 'task1', course: 'CS5000', completed: false });
-      chai.assert.isArray(result);
-      chai.assert.isEmpty(result);
-
-      result = dao.find({ course: 'MS5000' });
-      chai.assert.isArray(result);
-      chai.assert.isEmpty(result);
-
-      result = dao.find({ course: 'CS4000', completed: true });
-      chai.assert.isArray(result);
-      chai.assert.isEmpty(result);
     });
   });
 });
