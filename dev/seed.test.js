@@ -23,5 +23,17 @@ describe('Seed In Memory Database', () => {
       chai.assert.isNotNull(repo.getAll());
       chai.assert.lengthOf(repo.getAll(), 100);
     });
+    it('should support an argument to determine the number of unique courses to create', () => {
+      const repo = new TaskRepository(new TaskMemoryDAO());
+      seed(repo, 100, 5);
+      const tasks = repo.getAll();
+      chai.assert.isNotNull(tasks);
+
+      const uniqueCourses = tasks.reduce((courseList, task) => {
+        if (!courseList.includes(task.course)) courseList.push(task.course);
+        return courseList;
+      }, []);
+      chai.assert.lengthOf(uniqueCourses, 5);
+    });
   });
 });
