@@ -1,0 +1,66 @@
+const Task = require('./Task');
+
+// meant to be private helper-methods
+const matchesCriteria = (task, criteria) => Object.keys(criteria).reduce((matching, key) => {
+  if (matching) return criteria[key] === task[key];
+  return false;
+}, true);
+
+const validateNewTaskProps = (props) => (props.title && props.course);
+
+const validateUpdateTaskProps = (props) => (props.id);
+
+// In-memory implementation
+class TaskDAO {
+  constructor() {
+    this.tasks = [];
+    this.maxId = 0;
+  }
+
+  find(criteria) {
+    if (!criteria || Object.keys(criteria).length === 0) {
+      return this.tasks;
+    }
+    return this.tasks.filter((task) => matchesCriteria(task, criteria));
+  }
+
+  findById(id) {
+    return this.tasks.find((task) => task.id === id);
+  }
+
+  newTask(props) {
+    if (!validateNewTaskProps(props)) return null;
+    this.maxId += 1;
+    const task = new Task(
+      this.maxId,
+      props.title,
+      props.course,
+      props.deadline,
+      props.completed,
+      props.scheduledDate,
+    );
+    this.tasks.push(task);
+    return task;
+  }
+
+  updateTask(props) {
+    if (!validateUpdateTaskProps(props)) return null;
+    const task = this.findById(props.id);
+    return Object.assign(task, {
+      ...props.title && { title: props.title },
+      ...props.course && { course: props.title },
+      ...props.deadline && { deadline: props.deadline },
+      ...props.completed && { completed: props.completed },
+      ...props.scheduledDate && { scheduledDate: props.scheduledDate },
+    });
+  }
+
+  // might be better to just have a deleted flag?
+  deleteByID(id) {
+    const task = this.findById(id);
+    this.tasks = this.tasks.filter((currentTask) => currentTask.id !== id);
+    return task;
+  }
+}
+
+module.exports = TaskDAO;
