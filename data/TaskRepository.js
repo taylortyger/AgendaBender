@@ -7,7 +7,7 @@ class TaskRepository {
     return this.dao.find({});
   }
 
-  getByID(id) {
+  getById(id) {
     return this.dao.findById(id);
   }
 
@@ -23,8 +23,8 @@ class TaskRepository {
     return this.dao.newTask(props);
   }
 
-  deleteByID(id) {
-    return this.dao.deleteByID(id);
+  deleteById(id) {
+    return this.dao.deleteById(id);
   }
 }
 
