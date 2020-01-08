@@ -238,7 +238,7 @@ describe('In-Memory TaskDAO', () => {
       };
       let updatedTask = dao.updateTask(props);
       chai.assert.isNotNull(updatedTask);
-      chai.assert.strictEqual(updatedTask.id, newTask.id);
+      chai.assert.strictEqual(updatedTask.id, props.id);
       chai.assert.strictEqual(updatedTask.title, 'new title');
       chai.assert.strictEqual(updatedTask.course, 'new course');
       chai.assert.isTrue(updatedTask.completed);
@@ -248,35 +248,117 @@ describe('In-Memory TaskDAO', () => {
       props = { id: newTask.id, title: 'new title 2' };
       updatedTask = dao.updateTask(props);
       chai.assert.isNotNull(updatedTask);
-      chai.assert.strictEqual(updatedTask.id, newTask.id);
+      chai.assert.strictEqual(updatedTask.id, props.id);
       chai.assert.strictEqual(updatedTask.title, 'new title 2');
 
       newTask = dao.newTask({ title: 'some task 3', course: 'CS3333' });
       props = { id: newTask.id, course: 'new course id' };
       updatedTask = dao.updateTask(props);
       chai.assert.isNotNull(updatedTask);
-      chai.assert.strictEqual(updatedTask.id, newTask.id);
+      chai.assert.strictEqual(updatedTask.id, props.id);
       chai.assert.strictEqual(updatedTask.course, 'new course id');
     });
     it('should not change properties that are not provided in props object', () => {
       const dao = new TaskMemoryDAO();
-      // newTask and updatedTask point to the same object... so this might change tests.
-      // such as: chai.assert.strictEqual(updatedTask.id, newTask.id); will ALWAYS be true since 
-      // it points to the same object. 
+
       let newTask = dao.newTask({ title: 'some task', course: 'CS1111' });
-      let props = { id: newTask.id, title: 'new title' };
-      let updatedTask = dao.updateTask(props);
-      console.log(newTask);
-      console.log(updatedTask);
+      let expected = {
+        id: newTask.id,
+        title: 'new title',
+        course: newTask.course,
+        completed: newTask.completed,
+        deadline: newTask.deadline,
+        scheduledDate: newTask.scheduledDate,
+      };
+      let updatedTask = dao.updateTask({ id: newTask.id, title: 'new title' });
       chai.assert.isNotNull(updatedTask);
-      chai.assert.strictEqual(updatedTask.id, newTask.id);
-      chai.assert.strictEqual(updatedTask.title, newTask.title);
-      chai.assert.strictEqual(updatedTask.course, newTask.course);
-      chai.assert.strictEqual(updatedTask.completed, newTask.completed);
-      chai.assert.strictEqual(updatedTask.deadline, newTask.completed);
+      chai.assert.strictEqual(updatedTask.id, expected.id);
+      chai.assert.strictEqual(updatedTask.title, expected.title);
+      chai.assert.strictEqual(updatedTask.course, expected.course);
+      chai.assert.strictEqual(updatedTask.completed, expected.completed);
+      chai.assert.strictEqual(updatedTask.deadline, expected.deadline);
+
+      newTask = dao.newTask({ title: 'some task 2', course: 'CS2222' });
+      expected = {
+        id: newTask.id,
+        title: newTask.title,
+        course: 'CS5000',
+        completed: newTask.completed,
+        deadline: newTask.deadline,
+        scheduledDate: newTask.scheduledDate,
+      };
+      updatedTask = dao.updateTask({ id: newTask.id, course: 'CS5000' });
+      chai.assert.isNotNull(updatedTask);
+      chai.assert.strictEqual(updatedTask.id, expected.id);
+      chai.assert.strictEqual(updatedTask.title, expected.title);
+      chai.assert.strictEqual(updatedTask.course, expected.course);
+      chai.assert.strictEqual(updatedTask.completed, expected.completed);
+      chai.assert.strictEqual(updatedTask.deadline, expected.deadline);
     });
     it('should return null if props object parameter is not valid (non existent, empty, or no id)', () => {
+      const dao = new TaskMemoryDAO();
+      const propsNoId = { title: 'new title', course: 'new course', completed: true };
+      const nonExistentId = 5555;
+      chai.assert.isNull(dao.updateTask());
+      chai.assert.isNull(dao.updateTask({}));
+      chai.assert.isNull(dao.updateTask(propsNoId));
+      chai.assert.isNull(dao.updateTask({ id: nonExistentId, course: 'new course' }));
 
+      dao.newTask({ title: 'test task1', course: 'TEST1234' });
+      dao.newTask({ title: 'test task2', course: 'TEST1234' });
+      dao.newTask({ title: 'test task3', course: 'TEST1234' });
+      dao.newTask({ title: 'test task4', course: 'TEST1234' });
+      dao.newTask({ title: 'test task5', course: 'TEST1234' });
+
+      chai.assert.isNull(dao.updateTask());
+      chai.assert.isNull(dao.updateTask({}));
+      chai.assert.isNull(dao.updateTask(propsNoId));
+      chai.assert.isNull(dao.updateTask({ id: nonExistentId, course: 'new course' }));
+    });
+  });
+  describe('deleteById()', () => {
+    it('should delete the task with the given id from dao.tasks', () => {
+      const dao = new TaskMemoryDAO();
+      dao.newTask({ title: 'task 1', course: 'TEST1234' });
+      dao.newTask({ title: 'task 1', course: 'TEST1234' });
+      dao.newTask({ title: 'task 1', course: 'TEST1234' });
+      const deleteId = dao.newTask({ title: 'task to delete', course: 'TEST1234' }).id;
+      chai.assert.lengthOf(dao.tasks, 4);
+
+      dao.deleteById(deleteId);
+      chai.assert.lengthOf(dao.tasks, 3);
+
+      const stillExists = dao.tasks.reduce((res, task) => res || (task.id === deleteId), false);
+      chai.assert.isFalse(stillExists, 'A task with the deleteId still exists in the tasks array');
+    });
+    it('should not delete any tasks if a task with the given id does not exist', () => {
+      const dao = new TaskMemoryDAO();
+      dao.newTask({ title: 'task 1', course: 'TEST1234' });
+      dao.newTask({ title: 'task 1', course: 'TEST1234' });
+      dao.newTask({ title: 'task 1', course: 'TEST1234' });
+      chai.assert.lengthOf(dao.tasks, 3);
+      const nonExistentId = 5555;
+
+      dao.deleteById(nonExistentId);
+      chai.assert.lengthOf(dao.tasks, 3);
+    });
+    it('should return the deleted task', () => {
+      const dao = new TaskMemoryDAO();
+      dao.newTask({ title: 'task 1', course: 'TEST1234' });
+      dao.newTask({ title: 'task 1', course: 'TEST1234' });
+      dao.newTask({ title: 'task 1', course: 'TEST1234' });
+      const deleteId = dao.newTask({ title: 'task to delete', course: 'TEST1234' }).id;
+
+      const deletedTask = dao.deleteById(deleteId);
+      chai.assert.isNotNull(deletedTask);
+      chai.assert.strictEqual(deletedTask.id, deleteId);
+      chai.assert.strictEqual(deletedTask.title, 'task to delete');
+      chai.assert.strictEqual(deletedTask.course, 'TEST1234');
+    });
+    it('should return null if no task with the given id is found', () => {
+      const dao = new TaskMemoryDAO();
+      chai.assert.isNull(dao.deleteById());
+      chai.assert.isNull(dao.deleteById(5555));
     });
   });
 });

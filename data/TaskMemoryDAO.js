@@ -46,7 +46,7 @@ class TaskMemoryDAO {
   updateTask(props) {
     if (!validateUpdateTaskProps(props)) return null;
     const task = this.findById(props.id);
-    return Object.assign(task, {
+    return task && Object.assign(task, {
       ...props.title && { title: props.title },
       ...props.course && { course: props.course },
       ...props.deadline && { deadline: props.deadline },
@@ -56,7 +56,7 @@ class TaskMemoryDAO {
   }
 
   // might be better to just have a deleted flag?
-  deleteByID(id) {
+  deleteById(id) {
     const task = this.findById(id);
     this.tasks = this.tasks.filter((currentTask) => currentTask.id !== id);
     return task;
