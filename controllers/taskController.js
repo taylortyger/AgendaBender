@@ -6,6 +6,7 @@ const seed = require('../dev/seed');
 
 const taskRepo = new TaskRepository(new TaskMemoryDAO());
 
+// will this ever be called twice?
 if (process.env.NODE_ENV === 'development' && argv.seed) {
   console.log('seeding database...');
   seed(taskRepo, argv.seed);
