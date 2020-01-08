@@ -57,9 +57,11 @@ class TaskMemoryDAO {
 
   // might be better to just have a deleted flag?
   deleteById(id) {
-    const task = this.findById(id);
-    this.tasks = this.tasks.filter((currentTask) => currentTask.id !== id);
-    return task;
+    const taskIndex = this.tasks.findIndex((t) => t.id === id);
+    if (taskIndex >= 0) {
+      return this.tasks.splice(taskIndex, 1)[0] || null;
+    }
+    return null;
   }
 }
 
