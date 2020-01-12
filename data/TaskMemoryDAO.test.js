@@ -32,6 +32,7 @@ describe('In-Memory TaskDAO', () => {
       const dao = new TaskMemoryDAO();
       chai.assert.isNotOk(dao.newTask());
       chai.assert.isNotOk(dao.newTask(null));
+      chai.assert.isNotOk(dao.newTask(undefined));
       chai.assert.isNotOk(dao.newTask({}));
       chai.assert.isNotOk(dao.newTask(12));
       chai.assert.isNotOk(dao.newTask(title = 'something', course = 'eo')); // param is not an object
