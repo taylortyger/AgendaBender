@@ -6,12 +6,12 @@ const matchesCriteria = (task, criteria) => Object.keys(criteria).reduce((matchi
   return false;
 }, true);
 
-const validateNewTaskProps = (props) => (props.title && props.course);
+const validateNewTaskProps = (props = {}) => (props && props.title && props.course);
 
-const validateUpdateTaskProps = (props) => (props.id);
+const validateUpdateTaskProps = (props = {}) => (props && props.id);
 
 // In-memory implementation
-class TaskDAO {
+class TaskMemoryDAO {
   constructor() {
     this.tasks = [];
     this.maxId = 0;
@@ -29,7 +29,7 @@ class TaskDAO {
   }
 
   newTask(props) {
-    if (!validateNewTaskProps(props)) return null;
+    if (!validateNewTaskProps(props)) return undefined;
     this.maxId += 1;
     const task = new Task(
       this.maxId,
@@ -44,11 +44,11 @@ class TaskDAO {
   }
 
   updateTask(props) {
-    if (!validateUpdateTaskProps(props)) return null;
+    if (!validateUpdateTaskProps(props)) return undefined;
     const task = this.findById(props.id);
-    return Object.assign(task, {
+    return task && Object.assign(task, {
       ...props.title && { title: props.title },
-      ...props.course && { course: props.title },
+      ...props.course && { course: props.course },
       ...props.deadline && { deadline: props.deadline },
       ...props.completed && { completed: props.completed },
       ...props.scheduledDate && { scheduledDate: props.scheduledDate },
@@ -56,11 +56,13 @@ class TaskDAO {
   }
 
   // might be better to just have a deleted flag?
-  deleteByID(id) {
-    const task = this.findById(id);
-    this.tasks = this.tasks.filter((currentTask) => currentTask.id !== id);
-    return task;
+  deleteById(id) {
+    const taskIndex = this.tasks.findIndex((t) => t.id === id);
+    if (taskIndex >= 0) {
+      return this.tasks.splice(taskIndex, 1)[0];
+    }
+    return undefined;
   }
 }
 
-module.exports = TaskDAO;
+module.exports = TaskMemoryDAO;

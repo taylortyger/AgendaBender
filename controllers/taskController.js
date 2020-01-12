@@ -1,7 +1,16 @@
+// eslint-disable-next-line prefer-destructuring
+const argv = require('yargs').argv;
 const TaskRepository = require('../data/TaskRepository');
-const TaskDAO = require('../data/TaskDAO');
+const TaskMemoryDAO = require('../data/TaskMemoryDAO');
+const seed = require('../dev/seed');
 
-const taskRepo = new TaskRepository(new TaskDAO());
+const taskRepo = new TaskRepository(new TaskMemoryDAO());
+
+// will this ever be called twice?
+if (process.env.NODE_ENV === 'development' && argv.seed) {
+  console.log('seeding database...');
+  seed(taskRepo, argv.seed);
+}
 
 const getAll = (req, res) => {
   res.send(taskRepo.getAll());
