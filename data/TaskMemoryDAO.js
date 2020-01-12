@@ -25,11 +25,11 @@ class TaskMemoryDAO {
   }
 
   findById(id) {
-    return this.tasks.find((task) => task.id === id) || null;
+    return this.tasks.find((task) => task.id === id);
   }
 
   newTask(props) {
-    if (!validateNewTaskProps(props)) return null;
+    if (!validateNewTaskProps(props)) return undefined;
     this.maxId += 1;
     const task = new Task(
       this.maxId,
@@ -44,7 +44,7 @@ class TaskMemoryDAO {
   }
 
   updateTask(props) {
-    if (!validateUpdateTaskProps(props)) return null;
+    if (!validateUpdateTaskProps(props)) return undefined;
     const task = this.findById(props.id);
     return task && Object.assign(task, {
       ...props.title && { title: props.title },
@@ -59,9 +59,9 @@ class TaskMemoryDAO {
   deleteById(id) {
     const taskIndex = this.tasks.findIndex((t) => t.id === id);
     if (taskIndex >= 0) {
-      return this.tasks.splice(taskIndex, 1)[0] || null;
+      return this.tasks.splice(taskIndex, 1)[0];
     }
-    return null;
+    return undefined;
   }
 }
 

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable no-plusplus */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
@@ -29,30 +30,29 @@ describe('In-Memory TaskDAO', () => {
   describe('newTask()', () => {
     it('should result in null if Task creation is unsuccessful (no props obj, or no title/course)', () => {
       const dao = new TaskMemoryDAO();
+      chai.assert.isNotOk(dao.newTask());
+      chai.assert.isNotOk(dao.newTask(null));
+      chai.assert.isNotOk(dao.newTask({}));
+      chai.assert.isNotOk(dao.newTask(12));
+      chai.assert.isNotOk(dao.newTask(title = 'something', course = 'eo')); // param is not an object
 
-      chai.assert.isNull(dao.newTask());
-      chai.assert.isNull(dao.newTask(null));
-      chai.assert.isNull(dao.newTask({}));
-      chai.assert.isNull(dao.newTask(12));
-      chai.assert.isNull(dao.newTask(title = 'something', course = 'eo')); // param is not an object
-
-      chai.assert.isNull(dao.newTask({ title: 'some task' }));
-      chai.assert.isNull(dao.newTask({ course: 'course7889' }));
-      chai.assert.isNull(dao.newTask({ title: 'some task', otherProp: 'some other property' }));
-      chai.assert.isNull(dao.newTask({ course: 'course7889', otherProp: 'some other property' }));
-      chai.assert.isNull(dao.newTask({ title: 'some task', otherProp: 'some other property' }));
+      chai.assert.isNotOk(dao.newTask({ title: 'some task' }));
+      chai.assert.isNotOk(dao.newTask({ course: 'course7889' }));
+      chai.assert.isNotOk(dao.newTask({ title: 'some task', otherProp: 'some other property' }));
+      chai.assert.isNotOk(dao.newTask({ course: 'course7889', otherProp: 'some other property' }));
+      chai.assert.isNotOk(dao.newTask({ title: 'some task', otherProp: 'some other property' }));
     });
     it('should return a successfully created task', () => {
       const dao = new TaskMemoryDAO();
       const task = dao.newTask({ title: 'my task', course: 'CS5000' });
-      chai.assert.isNotNull(task);
+      chai.assert.isOk(task);
       chai.assert.strictEqual(task.title, 'my task');
       chai.assert.strictEqual(task.course, 'CS5000');
     });
     it('should set default values for non-required properties', () => {
       const dao = new TaskMemoryDAO();
       const task = dao.newTask({ title: 'my task', course: 'CS5000' });
-      chai.assert.isNotNull(task);
+      chai.assert.isOk(task);
       chai.assert.isNumber(task.id);
       chai.assert.isNull(task.deadline);
       chai.assert.isFalse(task.completed);
@@ -193,26 +193,26 @@ describe('In-Memory TaskDAO', () => {
 
         let newTask = dao.newTask({ title: 'some task', course: 'CS1111' });
         let resultTask = dao.findById(newTask.id);
-        chai.assert.isNotNull(resultTask);
-        chai.assert.deepEqual(newTask, resultTask);
+        chai.expect(resultTask).to.be.ok;
+        chai.expect(resultTask).to.be.deep.equal(resultTask);
 
         newTask = dao.newTask({ title: 'some task2', course: 'CS2222' });
         resultTask = dao.findById(newTask.id);
-        chai.assert.isNotNull(resultTask);
-        chai.assert.deepEqual(newTask, resultTask);
+        chai.expect(resultTask).to.be.ok;
+        chai.expect(resultTask).to.be.deep.equal(resultTask);
 
         newTask = dao.newTask({ title: 'some task3', course: 'CS3333' });
         resultTask = dao.findById(newTask.id);
-        chai.assert.isNotNull(resultTask);
-        chai.assert.deepEqual(newTask, resultTask);
+        chai.expect(resultTask).to.be.ok;
+        chai.expect(resultTask).to.be.deep.equal(resultTask);
       });
-      it('returns null if a task with the given id does not exist in the tasks array', () => {
+      it('returns falsy value if a task with the given id does not exist in the tasks array', () => {
         const dao = new TaskMemoryDAO();
 
         // no tasks added yet
-        chai.assert.isNull(dao.findById(50));
-        chai.assert.isNull(dao.findById(0));
-        chai.assert.isNull(dao.findById(1));
+        chai.expect(dao.findById(50)).to.not.be.ok;
+        chai.expect(dao.findById(0)).to.not.be.ok;
+        chai.expect(dao.findById(1)).to.not.be.ok;
 
         // with tasks added to tasks array
         dao.newTask({ title: 't1', course: 'C1' });
@@ -220,7 +220,7 @@ describe('In-Memory TaskDAO', () => {
         dao.newTask({ title: 't3', course: 'C3' });
         dao.newTask({ title: 't4', course: 'C4' });
 
-        chai.assert.isNull(dao.findById(dao.maxId + 5));
+        chai.expect(dao.findById(dao.maxId + 5)).to.not.be.ok;
       });
     });
   });
@@ -237,7 +237,7 @@ describe('In-Memory TaskDAO', () => {
         deadline: 'December 20, 2020',
       };
       let updatedTask = dao.updateTask(props);
-      chai.assert.isNotNull(updatedTask);
+      chai.assert.isOk(updatedTask);
       chai.assert.strictEqual(updatedTask.id, props.id);
       chai.assert.strictEqual(updatedTask.title, 'new title');
       chai.assert.strictEqual(updatedTask.course, 'new course');
@@ -247,14 +247,14 @@ describe('In-Memory TaskDAO', () => {
       newTask = dao.newTask({ title: 'some task 2', course: 'CS2222' });
       props = { id: newTask.id, title: 'new title 2' };
       updatedTask = dao.updateTask(props);
-      chai.assert.isNotNull(updatedTask);
+      chai.assert.isOk(updatedTask);
       chai.assert.strictEqual(updatedTask.id, props.id);
       chai.assert.strictEqual(updatedTask.title, 'new title 2');
 
       newTask = dao.newTask({ title: 'some task 3', course: 'CS3333' });
       props = { id: newTask.id, course: 'new course id' };
       updatedTask = dao.updateTask(props);
-      chai.assert.isNotNull(updatedTask);
+      chai.assert.isOk(updatedTask);
       chai.assert.strictEqual(updatedTask.id, props.id);
       chai.assert.strictEqual(updatedTask.course, 'new course id');
     });
@@ -271,7 +271,7 @@ describe('In-Memory TaskDAO', () => {
         scheduledDate: newTask.scheduledDate,
       };
       let updatedTask = dao.updateTask({ id: newTask.id, title: 'new title' });
-      chai.assert.isNotNull(updatedTask);
+      chai.assert.isOk(updatedTask);
       chai.assert.strictEqual(updatedTask.id, expected.id);
       chai.assert.strictEqual(updatedTask.title, expected.title);
       chai.assert.strictEqual(updatedTask.course, expected.course);
@@ -288,21 +288,21 @@ describe('In-Memory TaskDAO', () => {
         scheduledDate: newTask.scheduledDate,
       };
       updatedTask = dao.updateTask({ id: newTask.id, course: 'CS5000' });
-      chai.assert.isNotNull(updatedTask);
+      chai.assert.isOk(updatedTask);
       chai.assert.strictEqual(updatedTask.id, expected.id);
       chai.assert.strictEqual(updatedTask.title, expected.title);
       chai.assert.strictEqual(updatedTask.course, expected.course);
       chai.assert.strictEqual(updatedTask.completed, expected.completed);
       chai.assert.strictEqual(updatedTask.deadline, expected.deadline);
     });
-    it('should return null if props object parameter is not valid (non existent, empty, or no id)', () => {
+    it('should return falsy value if props object parameter is not valid (non existent, empty, or no id)', () => {
       const dao = new TaskMemoryDAO();
       const propsNoId = { title: 'new title', course: 'new course', completed: true };
       const nonExistentId = 5555;
-      chai.assert.isNull(dao.updateTask());
-      chai.assert.isNull(dao.updateTask({}));
-      chai.assert.isNull(dao.updateTask(propsNoId));
-      chai.assert.isNull(dao.updateTask({ id: nonExistentId, course: 'new course' }));
+      chai.assert.isNotOk(dao.updateTask());
+      chai.assert.isNotOk(dao.updateTask({}));
+      chai.assert.isNotOk(dao.updateTask(propsNoId));
+      chai.assert.isNotOk(dao.updateTask({ id: nonExistentId, course: 'new course' }));
 
       dao.newTask({ title: 'test task1', course: 'TEST1234' });
       dao.newTask({ title: 'test task2', course: 'TEST1234' });
@@ -310,10 +310,10 @@ describe('In-Memory TaskDAO', () => {
       dao.newTask({ title: 'test task4', course: 'TEST1234' });
       dao.newTask({ title: 'test task5', course: 'TEST1234' });
 
-      chai.assert.isNull(dao.updateTask());
-      chai.assert.isNull(dao.updateTask({}));
-      chai.assert.isNull(dao.updateTask(propsNoId));
-      chai.assert.isNull(dao.updateTask({ id: nonExistentId, course: 'new course' }));
+      chai.assert.isNotOk(dao.updateTask());
+      chai.assert.isNotOk(dao.updateTask({}));
+      chai.assert.isNotOk(dao.updateTask(propsNoId));
+      chai.assert.isNotOk(dao.updateTask({ id: nonExistentId, course: 'new course' }));
     });
   });
   describe('deleteById()', () => {
@@ -350,15 +350,15 @@ describe('In-Memory TaskDAO', () => {
       const deleteId = dao.newTask({ title: 'task to delete', course: 'TEST1234' }).id;
 
       const deletedTask = dao.deleteById(deleteId);
-      chai.assert.isNotNull(deletedTask);
+      chai.assert.isOk(deletedTask);
       chai.assert.strictEqual(deletedTask.id, deleteId);
       chai.assert.strictEqual(deletedTask.title, 'task to delete');
       chai.assert.strictEqual(deletedTask.course, 'TEST1234');
     });
-    it('should return null if no task with the given id is found', () => {
+    it('should return falsy value if no task with the given id is found', () => {
       const dao = new TaskMemoryDAO();
-      chai.assert.isNull(dao.deleteById());
-      chai.assert.isNull(dao.deleteById(5555));
+      chai.assert.isNotOk(dao.deleteById());
+      chai.assert.isNotOk(dao.deleteById(5555));
     });
   });
 });
