@@ -8,21 +8,6 @@ const should = chai.should();
 const TaskMemoryDAO = require('./TaskMemoryDAO');
 const TaskRepository = require('./TaskRepository');
 
-// helper TaskRepository singleton for tests
-const TaskRepositorySingleton = () => {
-  let repo = null;
-  const freshInstance = () => {
-    repo = new TaskRepository(new TaskMemoryDAO());
-    return repo;
-  };
-  const getInstance = () => repo || freshInstance();
-  return {
-    freshInstance,
-    getInstance,
-  };
-};
-const TaskRepo = TaskRepositorySingleton();
-
 describe('TaskRepository', () => {
   describe('getAll()', () => {
     it('should return an empty array if no tasks exist', () => {
