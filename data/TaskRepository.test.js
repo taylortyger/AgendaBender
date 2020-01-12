@@ -35,21 +35,21 @@ describe('TaskRepository', () => {
       repo.newTask({ title: 'Task 3', course: 'TEST1234' });
       const taskToFind = repo.newTask({ title: 'Task 4', course: 'FOUND1234' });
       const result = repo.getById(taskToFind.id);
-      chai.assert.isNotNull(result);
+      chai.assert.isOk(result);
       chai.assert.strictEqual(result.title, 'Task 4');
       chai.assert.strictEqual(result.course, 'FOUND1234');
     });
-    it('should return null if a task with the given id does not exist', () => {
+    it('should return falsy if a task with the given id does not exist', () => {
       const repo = new TaskRepository(new TaskMemoryDAO());
-      chai.assert.isNull(repo.getById());
-      chai.assert.isNull(repo.getById(10));
-      chai.assert.isNull(repo.getById({}));
+      chai.assert.isNotOk(repo.getById());
+      chai.assert.isNotOk(repo.getById(10));
+      chai.assert.isNotOk(repo.getById({}));
       repo.newTask({ title: 'Task 1', course: 'TEST1234' });
       repo.newTask({ title: 'Task 2', course: 'TEST1234' });
       repo.newTask({ title: 'Task 3', course: 'TEST1234' });
-      chai.assert.isNull(repo.getById());
-      chai.assert.isNull(repo.getById(9999));
-      chai.assert.isNull(repo.getById({ id: 10 }));
+      chai.assert.isNotOk(repo.getById());
+      chai.assert.isNotOk(repo.getById(9999));
+      chai.assert.isNotOk(repo.getById({ id: 10 }));
     });
   });
   describe('update()', () => {
@@ -60,7 +60,7 @@ describe('TaskRepository', () => {
       repo.newTask({ title: 'Task 3', course: 'TEST1234' });
       const updateId = repo.newTask({ title: 'UPDATE ME', course: 'UPDATE1234' }).id;
       const result = repo.update({ id: updateId, title: 'new title', course: 'NEW1234' });
-      chai.assert.isNotNull(result);
+      chai.assert.isOk(result);
       chai.assert.strictEqual(result.id, updateId);
     });
     it('should update any provided valid fields', () => {
@@ -70,7 +70,7 @@ describe('TaskRepository', () => {
       repo.newTask({ title: 'Task 3', course: 'TEST1234' });
       const updateId = repo.newTask({ title: 'UPDATE ME', course: 'UPDATE1234' }).id;
       const result = repo.update({ id: updateId, title: 'new title', course: 'NEW1234' });
-      chai.assert.isNotNull(result);
+      chai.assert.isOk(result);
       chai.assert.strictEqual(result.id, updateId);
       chai.assert.strictEqual(result.title, 'new title');
       chai.assert.strictEqual(result.course, 'NEW1234');
@@ -81,9 +81,9 @@ describe('TaskRepository', () => {
       repo.newTask({ title: 'Task 2', course: 'TEST1234' });
       repo.newTask({ title: 'Task 3', course: 'TEST1234' });
       repo.newTask({ title: 'Task 4', course: 'TEST1234' });
-      chai.assert.isNull(repo.update());
-      chai.assert.isNull(repo.update({}));
-      chai.assert.isNull(repo.update({ id: 12345 }));
+      chai.assert.isNotOk(repo.update());
+      chai.assert.isNotOk(repo.update({}));
+      chai.assert.isNotOk(repo.update({ id: 12345 }));
     });
   });
   describe('getByCourse()', () => {
@@ -128,7 +128,7 @@ describe('TaskRepository', () => {
     it('should return the created task', () => {
       const repo = new TaskRepository(new TaskMemoryDAO());
       const result = repo.newTask({ title: 'new task', course: 'TEST1234' });
-      chai.assert.isNotNull(result);
+      chai.assert.isOk(result);
       chai.assert.strictEqual(result.title, 'new task');
       chai.assert.strictEqual(result.course, 'TEST1234');
     });
@@ -136,16 +136,16 @@ describe('TaskRepository', () => {
       const repo = new TaskRepository(new TaskMemoryDAO());
       const newTask = repo.newTask({ title: 'new task', course: 'TEST1234' });
       const result = repo.getById(newTask.id);
-      chai.assert.isNotNull(result);
+      chai.assert.isOk(result);
       chai.assert.strictEqual(result.title, 'new task');
       chai.assert.strictEqual(result.course, 'TEST1234');
     });
-    it('should return null if task creation is unsuccessful', () => {
+    it('should return falsy if task creation is unsuccessful', () => {
       const repo = new TaskRepository(new TaskMemoryDAO());
-      chai.assert.isNull(repo.newTask());
-      chai.assert.isNull(repo.newTask({}));
-      chai.assert.isNull(repo.newTask({ title: 'new task' }));
-      chai.assert.isNull(repo.newTask({ course: 'TEST1234' }));
+      chai.assert.isNotOk(repo.newTask());
+      chai.assert.isNotOk(repo.newTask({}));
+      chai.assert.isNotOk(repo.newTask({ title: 'new task' }));
+      chai.assert.isNotOk(repo.newTask({ course: 'TEST1234' }));
     });
   });
   describe('deleteById()', () => {
@@ -156,7 +156,7 @@ describe('TaskRepository', () => {
       repo.newTask({ title: 'Task 3', course: 'TEST1234' });
       const taskToDelete = repo.newTask({ title: 'Task 4', course: 'TEST1234' });
       const result = repo.deleteById(taskToDelete.id);
-      chai.assert.isNotNull(result);
+      chai.assert.isOk(result);
       chai.assert.isObject(result);
       chai.assert.strictEqual(result.title, 'Task 4');
       chai.assert.strictEqual(result.course, 'TEST1234');
@@ -167,18 +167,18 @@ describe('TaskRepository', () => {
       repo.newTask({ title: 'Task 2', course: 'TEST1234' });
       repo.newTask({ title: 'Task 3', course: 'TEST1234' });
       const taskToDelete = repo.newTask({ title: 'Task 4', course: 'TEST1234' });
-      chai.assert.isNotNull(repo.getById(taskToDelete.id));
+      chai.assert.isOk(repo.getById(taskToDelete.id));
       const result = repo.deleteById(taskToDelete.id);
-      chai.assert.isNull(repo.getById(taskToDelete.id));
+      chai.assert.isNotOk(repo.getById(taskToDelete.id));
     });
-    it('should return null if task deletion is unsuccessful (task not found, id not provided)', () => {
+    it('should return falsy if task deletion is unsuccessful (task not found, id not provided)', () => {
       const repo = new TaskRepository(new TaskMemoryDAO());
       repo.newTask({ title: 'Task 1', course: 'TEST1234' });
       repo.newTask({ title: 'Task 2', course: 'TEST1234' });
       repo.newTask({ title: 'Task 3', course: 'TEST1234' });
-      chai.assert.isNull(repo.deleteById());
-      chai.assert.isNull(repo.deleteById(12345));
-      chai.assert.isNull(repo.deleteById({}));
+      chai.assert.isNotOk(repo.deleteById());
+      chai.assert.isNotOk(repo.deleteById(12345));
+      chai.assert.isNotOk(repo.deleteById({}));
     });
   });
 });
