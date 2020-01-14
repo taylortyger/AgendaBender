@@ -17,7 +17,7 @@ const getAll = (req, res) => {
 };
 
 const getByID = (req, res) => {
-  const task = taskRepo.getByID(parseInt(req.params.id, 10));
+  const task = taskRepo.getById(parseInt(req.params.id, 10));
   if (task) {
     res.send(task);
   } else {

@@ -166,4 +166,42 @@ describe('CourseMemoryDAO', () => {
       chai.expect(() => dao.updateCourse({ id: {}, title: 'NEW123' })).to.throw('Updating requires a valid course id');
     });
   });
+  describe('deleteById()', () => {
+    let dao;
+    beforeEach(() => {
+      dao = new CourseMemoryDAO();
+      dao.newCourse('COURSE1');
+      dao.newCourse('COURSE2');
+      dao.newCourse('COURSE3');
+      dao.newCourse('COURSE4');
+      dao.newCourse('COURSE5');
+    });
+    it('should return the deleted course', () => {
+      const courseIdToDelete = dao.newCourse('DEL123').id;
+      const result = dao.deleteById(courseIdToDelete);
+      chai.expect(result).to.be.an.instanceOf(Course);
+      chai.expect(result.id).to.equal(courseIdToDelete);
+      chai.expect(result.title).to.equal('DEL123');
+    });
+    it('should remove the course from the courses array', () => {
+      const courseIdToDelete = dao.newCourse('DEL123').id;
+      chai.expect(dao.courses).to.have.lengthOf(6);
+      chai.expect(dao.findById(courseIdToDelete)).to.be.an.instanceOf(Course);
+      dao.deleteById(courseIdToDelete);
+      chai.expect(dao.courses).to.have.lengthOf(5);
+      chai.expect(dao.findById(courseIdToDelete)).to.not.be.ok;
+    });
+    it('should return falsy if a course with the given id does not exist', () => {
+      chai.expect(dao.deleteById(100)).to.not.be.ok;
+      chai.expect(dao.deleteById(5555)).to.not.be.ok;
+    });
+    it('should not remove any courses from the courses array if a course with the given id is not found', () => {
+      chai.expect(dao.courses).to.have.lengthOf(5);
+      dao.deleteById(1234567);
+      chai.expect(dao.courses).to.have.lengthOf(5);
+    });
+    it('should throw an error if a valid id is not passed in', () => {
+      chai.expect(dao.deleteById()).to.throw('');
+    });
+  });
 });

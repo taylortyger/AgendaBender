@@ -40,6 +40,14 @@ class CourseMemoryDAO {
       ...props.title && { title: props.title },
     });
   }
+
+  deleteById(id) {
+    const courseIndex = this.courses.findIndex((t) => t.id === id);
+    if (courseIndex >= 0) {
+      return this.courses.splice(courseIndex, 1)[0];
+    }
+    return undefined;
+  }
 }
 
 module.exports = CourseMemoryDAO;
