@@ -14,7 +14,7 @@ class CourseMemoryDAO {
   }
 
   newCourse(title) {
-    if (!validateTitle(title)) return undefined;
+    if (!validateTitle(title)) throw new Error('Courses must have a valid title');
     this.maxCourseId += 1;
     const course = new Course(this.maxCourseId, title);
     this.courses.push(course);

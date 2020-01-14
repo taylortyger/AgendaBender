@@ -49,13 +49,13 @@ describe('CourseMemoryDAO', () => {
       chai.expect(createdCourse).to.haveOwnProperty('title');
       chai.expect(createdCourse.title).to.be.equal('COURSE1');
     });
-    it('Should return falsy if course creation is not successful', () => {
+    it('Should throw an error if input is not a string (invalid)', () => {
       const dao = new CourseMemoryDAO();
-      chai.expect(dao.newCourse()).to.not.be.ok;
-      chai.expect(dao.newCourse({})).to.not.be.ok;
-      chai.expect(dao.newCourse({ title: 'COURSE1' })).to.not.be.ok;
-      chai.expect(dao.newCourse(12345)).to.not.be.ok;
-      chai.expect(dao.newCourse(true)).to.not.be.ok;
+      chai.expect(() => dao.newCourse()).to.throw('Courses must have a valid title');
+      chai.expect(() => dao.newCourse({})).to.throw('Courses must have a valid title');
+      chai.expect(() => dao.newCourse({ title: 'COURSE1' })).to.throw('Courses must have a valid title');
+      chai.expect(() => dao.newCourse(12345)).to.throw('Courses must have a valid title');
+      chai.expect(() => dao.newCourse(true)).to.throw('Courses must have a valid title');
     });
   });
   describe('find', () => {
@@ -111,6 +111,17 @@ describe('CourseMemoryDAO', () => {
       chai.expect(dao.findById(1111)).to.not.be.ok;
       chai.expect(dao.findById(555)).to.not.be.ok;
       chai.expect(dao.findById()).to.not.be.ok;
+    });
+  });
+  describe('updateCourse', () => {
+    it('should return the updated course', () => {
+
+    });
+    it('should return falsy if the course is not found', () => {
+
+    });
+    it('should update the provided task properties (title) for the given task id', () => {
+
     });
   });
 });
