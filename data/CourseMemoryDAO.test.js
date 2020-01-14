@@ -114,14 +114,56 @@ describe('CourseMemoryDAO', () => {
     });
   });
   describe('updateCourse', () => {
+    let dao;
+    beforeEach(() => {
+      dao = new CourseMemoryDAO();
+      dao.newCourse('COURSE1');
+      dao.newCourse('COURSE2');
+      dao.newCourse('COURSE3');
+      dao.newCourse('COURSE4');
+      dao.newCourse('COURSE5');
+    });
     it('should return the updated course', () => {
+      let result = dao.updateCourse({ id: 1, title: 'NEWCOURSE1' });
+      chai.expect(result).to.be.an.instanceOf(Course);
+      chai.expect(result.id).to.equal(1);
 
+      result = dao.updateCourse({ id: 2, title: 'NEWCOURSE2' });
+      chai.expect(result).to.be.an.instanceOf(Course);
+      chai.expect(result.id).to.equal(2);
     });
     it('should return falsy if the course is not found', () => {
+      let result = dao.updateCourse({ id: 123456, title: 'NOTEXIST123' });
+      chai.expect(result).to.not.be.ok;
 
+      result = dao.updateCourse({ id: 999999, title: 'NOTEXIST123' });
+      chai.expect(result).to.not.be.ok;
     });
-    it('should update the provided task properties (title) for the given task id', () => {
+    it('should update the provided course properties (title) for the given course id', () => {
+      let result = dao.updateCourse({ id: 1, title: 'NEWCOURSE1' });
+      chai.expect(result).to.be.an.instanceOf(Course);
+      chai.expect(result.id).to.equal(1);
+      chai.expect(result.title).to.equal('NEWCOURSE1');
 
+      result = dao.updateCourse({ id: 2, title: 'NEWCOURSE2' });
+      chai.expect(result).to.be.an.instanceOf(Course);
+      chai.expect(result.id).to.equal(2);
+      chai.expect(result.title).to.equal('NEWCOURSE2');
+
+      result = dao.updateCourse({ id: 3, title: 'NEWCOURSE3' });
+      chai.expect(result).to.be.an.instanceOf(Course);
+      chai.expect(result.id).to.equal(3);
+      chai.expect(result.title).to.equal('NEWCOURSE3');
+    });
+    it('should throw an error if a valid course id is not provided in the props object', () => {
+      chai.expect(() => dao.updateCourse()).to.throw('Updating requires a valid course id');
+      chai.expect(() => dao.updateCourse({})).to.throw('Updating requires a valid course id');
+      chai.expect(() => dao.updateCourse(null)).to.throw('Updating requires a valid course id');
+      chai.expect(() => dao.updateCourse({ title: 'NEW123' })).to.throw('Updating requires a valid course id');
+      // must be an integer
+      chai.expect(() => dao.updateCourse({ id: true, title: 'NEW123' })).to.throw('Updating requires a valid course id');
+      chai.expect(() => dao.updateCourse({ id: 'some string', title: 'NEW123' })).to.throw('Updating requires a valid course id');
+      chai.expect(() => dao.updateCourse({ id: {}, title: 'NEW123' })).to.throw('Updating requires a valid course id');
     });
   });
 });

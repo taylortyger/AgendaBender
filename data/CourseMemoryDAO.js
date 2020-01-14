@@ -1,6 +1,7 @@
 const Course = require('./Course');
 
 const validateTitle = (title) => (title && (typeof title === 'string' || title instanceof String));
+const validateUpdateCourseProps = (props) => (props && props.id && Number.isInteger(props.id));
 
 const matchesCriteria = (course, criteria) => Object.keys(criteria).reduce((matching, key) => {
   if (matching) return criteria[key] === course[key];
@@ -30,6 +31,14 @@ class CourseMemoryDAO {
 
   findById(id) {
     return this.courses.find((course) => course.id === id);
+  }
+
+  updateCourse(props) {
+    if (!validateUpdateCourseProps(props)) throw new Error('Updating requires a valid course id');
+    const course = this.findById(props.id);
+    return course && Object.assign(course, {
+      ...props.title && { title: props.title },
+    });
   }
 }
 
