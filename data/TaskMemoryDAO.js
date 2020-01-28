@@ -6,8 +6,10 @@ const matchesCriteria = (task, criteria) => Object.keys(criteria).reduce((matchi
   return false;
 }, true);
 
-const validateNewTaskProps = (props = {}) => (props && props.title && props.course);
-
+const validateNewTaskProps = (props = {}) => (props
+                                              && props.title
+                                              && props.courseId
+                                              && Number.isInteger(props.courseId));
 const validateUpdateTaskProps = (props = {}) => (props && props.id);
 
 // In-memory implementation
@@ -34,7 +36,7 @@ class TaskMemoryDAO {
     const task = new Task(
       this.maxId,
       props.title,
-      props.course,
+      props.courseId,
       props.deadline,
       props.completed,
       props.scheduledDate,
@@ -48,7 +50,7 @@ class TaskMemoryDAO {
     const task = this.findById(props.id);
     return task && Object.assign(task, {
       ...props.title && { title: props.title },
-      ...props.course && { course: props.course },
+      ...props.courseId && { courseId: props.courseId },
       ...props.deadline && { deadline: props.deadline },
       ...props.completed && { completed: props.completed },
       ...props.scheduledDate && { scheduledDate: props.scheduledDate },
