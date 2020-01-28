@@ -10,7 +10,7 @@ const TaskRepository = require('../data/TaskRepository');
 const seed = require('./seed');
 
 const getUniqueCourses = (tasks) => tasks.reduce((courseList, task) => {
-  if (!courseList.includes(task.course)) courseList.push(task.course);
+  if (!courseList.includes(task.courseId)) courseList.push(task.courseId);
   return courseList;
 }, []);
 
