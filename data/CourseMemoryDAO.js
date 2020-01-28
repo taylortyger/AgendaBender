@@ -1,4 +1,5 @@
 const Course = require('./Course');
+const InMemoryDataStore = require('./InMemoryDataStore');
 
 const validateTitle = (title) => (title && (typeof title === 'string' || title instanceof String));
 const validateUpdateCourseProps = (props) => (props && props.id && Number.isInteger(props.id));
@@ -11,27 +12,26 @@ const matchesCriteria = (course, criteria) => Object.keys(criteria).reduce((matc
 
 class CourseMemoryDAO {
   constructor() {
-    this.courses = [];
-    this.maxCourseId = 0;
+    this.data = InMemoryDataStore;
   }
 
   newCourse(title) {
     if (!validateTitle(title)) throw new Error('Courses must have a valid title');
-    this.maxCourseId += 1;
-    const course = new Course(this.maxCourseId, title);
-    this.courses.push(course);
+    this.data.maxCourseId += 1;
+    const course = new Course(this.data.maxCourseId, title);
+    this.data.courses.push(course);
     return course;
   }
 
   find(criteria) {
     if (!criteria || Object.keys(criteria).length === 0) {
-      return this.courses;
+      return this.data.courses;
     }
-    return this.courses.filter((course) => matchesCriteria(course, criteria));
+    return this.data.courses.filter((course) => matchesCriteria(course, criteria));
   }
 
   findById(id) {
-    return this.courses.find((course) => course.id === id);
+    return this.data.courses.find((course) => course.id === id);
   }
 
   updateCourse(props) {
@@ -44,9 +44,9 @@ class CourseMemoryDAO {
 
   deleteById(id) {
     if (!validateDeleteId(id)) throw new Error('Delete requires a valid id');
-    const courseIndex = this.courses.findIndex((t) => t.id === id);
+    const courseIndex = this.data.courses.findIndex((t) => t.id === id);
     if (courseIndex >= 0) {
-      return this.courses.splice(courseIndex, 1)[0];
+      return this.data.courses.splice(courseIndex, 1)[0];
     }
     return undefined;
   }

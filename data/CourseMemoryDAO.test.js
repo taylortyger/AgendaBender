@@ -7,50 +7,55 @@ const chai = require('chai');
 
 const should = chai.should();
 const CourseMemoryDAO = require('./CourseMemoryDAO');
+const InMemoryDataStore = require('./InMemoryDataStore');
 
 const Course = require('./Course');
 
 describe('CourseMemoryDAO', () => {
   describe('construction', () => {
-    it('Should initialize with an empty course array and a maxCourseId of 0', () => {
+    it('Should initialize with access to the in-memory data store object', () => {
       const dao = new CourseMemoryDAO();
-      chai.expect(dao.courses).to.be.instanceOf(Array);
-      chai.expect(dao.courses).to.be.empty;
-      chai.expect(dao.maxCourseId).to.be.equal(0);
+      chai.expect(dao.data).to.be.equal(InMemoryDataStore);
     });
+
     it('Should not be affected by parameters', () => {
       const dao = new CourseMemoryDAO([1, 2, 3], false, 'test');
-      chai.expect(dao.courses).to.be.instanceOf(Array);
-      chai.expect(dao.courses).to.be.empty;
-      chai.expect(dao.maxCourseId).to.be.equal(0);
+      chai.expect(dao.data).to.be.equal(InMemoryDataStore);
     });
   });
   describe('newCourse()', () => {
-    it('Should add the new course to the courses array', () => {
-      const dao = new CourseMemoryDAO();
-      chai.expect(dao.courses).to.have.lengthOf(0);
-      dao.newCourse('COURSE1');
-      chai.expect(dao.courses).to.have.lengthOf(1);
-      dao.newCourse('COURSE2');
-      chai.expect(dao.courses).to.have.lengthOf(2);
+    let dao;
+    beforeEach(() => {
+      dao = new CourseMemoryDAO();
+      dao.data.clear();
     });
-    it('Should increment the maxCourseId by 1 to ensure uniqueness', () => {
-      const dao = new CourseMemoryDAO();
-      chai.expect(dao.maxCourseId).to.equal(0);
+
+    afterEach(() => {
+      dao.data.clear();
+    });
+
+    it('Should add the new course to the courses array', () => {
+      chai.expect(dao.data.courses).to.have.lengthOf(0);
       dao.newCourse('COURSE1');
-      chai.expect(dao.maxCourseId).to.equal(1);
+      chai.expect(dao.data.courses).to.have.lengthOf(1);
       dao.newCourse('COURSE2');
-      chai.expect(dao.maxCourseId).to.equal(2);
+      chai.expect(dao.data.courses).to.have.lengthOf(2);
+    });
+
+    it('Should increment the maxCourseId by 1 to ensure uniqueness', () => {
+      chai.expect(dao.data.maxCourseId).to.equal(0);
+      dao.newCourse('COURSE1');
+      chai.expect(dao.data.maxCourseId).to.equal(1);
+      dao.newCourse('COURSE2');
+      chai.expect(dao.data.maxCourseId).to.equal(2);
     });
     it('Should return a successfully created course', () => {
-      const dao = new CourseMemoryDAO();
       const createdCourse = dao.newCourse('COURSE1');
       chai.expect(createdCourse).to.be.ok;
       chai.expect(createdCourse).to.haveOwnProperty('title');
       chai.expect(createdCourse.title).to.be.equal('COURSE1');
     });
     it('Should throw an error if input is not a string (invalid)', () => {
-      const dao = new CourseMemoryDAO();
       chai.expect(() => dao.newCourse()).to.throw('Courses must have a valid title');
       chai.expect(() => dao.newCourse({})).to.throw('Courses must have a valid title');
       chai.expect(() => dao.newCourse({ title: 'COURSE1' })).to.throw('Courses must have a valid title');
@@ -62,12 +67,18 @@ describe('CourseMemoryDAO', () => {
     let dao;
     beforeEach(() => {
       dao = new CourseMemoryDAO();
+      dao.data.clear();
       dao.newCourse('COURSE1');
       dao.newCourse('COURSE2');
       dao.newCourse('COURSE3');
       dao.newCourse('COURSE4');
       dao.newCourse('COURSE5');
     });
+
+    afterEach(() => {
+      dao.data.clear();
+    });
+
     it('Should return an array of all courses if no criteria is provided', () => {
       chai.expect(dao.find()).to.be.an.instanceOf(Array).and.to.have.lengthOf(5);
       chai.expect(dao.find({})).to.be.an.instanceOf(Array).and.to.have.lengthOf(5);
@@ -89,14 +100,21 @@ describe('CourseMemoryDAO', () => {
   });
   describe('findById', () => {
     let dao;
+
     beforeEach(() => {
       dao = new CourseMemoryDAO();
+      dao.data.clear();
       dao.newCourse('COURSE1');
       dao.newCourse('COURSE2');
       dao.newCourse('COURSE3');
       dao.newCourse('COURSE4');
       dao.newCourse('COURSE5');
     });
+
+    afterEach(() => {
+      dao.data.clear();
+    });
+
     it('Should return the course with the given id if it exists in the courses array', () => {
       chai.expect(dao.findById(1)).to.be.an.instanceOf(Course);
       chai.expect(dao.findById(1).title).to.be.equal('COURSE1');
@@ -107,6 +125,7 @@ describe('CourseMemoryDAO', () => {
       chai.expect(dao.findById(3)).to.be.an.instanceOf(Course);
       chai.expect(dao.findById(3).title).to.be.equal('COURSE3');
     });
+
     it('Should return falsy if the course with the given id does not exist in the courses array', () => {
       chai.expect(dao.findById(1111)).to.not.be.ok;
       chai.expect(dao.findById(555)).to.not.be.ok;
@@ -117,12 +136,18 @@ describe('CourseMemoryDAO', () => {
     let dao;
     beforeEach(() => {
       dao = new CourseMemoryDAO();
+      dao.data.clear();
       dao.newCourse('COURSE1');
       dao.newCourse('COURSE2');
       dao.newCourse('COURSE3');
       dao.newCourse('COURSE4');
       dao.newCourse('COURSE5');
     });
+
+    afterEach(() => {
+      dao.data.clear();
+    });
+
     it('should return the updated course', () => {
       let result = dao.updateCourse({ id: 1, title: 'NEWCOURSE1' });
       chai.expect(result).to.be.an.instanceOf(Course);
@@ -170,12 +195,18 @@ describe('CourseMemoryDAO', () => {
     let dao;
     beforeEach(() => {
       dao = new CourseMemoryDAO();
+      dao.data.clear();
       dao.newCourse('COURSE1');
       dao.newCourse('COURSE2');
       dao.newCourse('COURSE3');
       dao.newCourse('COURSE4');
       dao.newCourse('COURSE5');
     });
+
+    afterEach(() => {
+      dao.data.clear();
+    });
+
     it('should return the deleted course', () => {
       const courseIdToDelete = dao.newCourse('DEL123').id;
       const result = dao.deleteById(courseIdToDelete);
@@ -185,10 +216,10 @@ describe('CourseMemoryDAO', () => {
     });
     it('should remove the course from the courses array', () => {
       const courseIdToDelete = dao.newCourse('DEL123').id;
-      chai.expect(dao.courses).to.have.lengthOf(6);
+      chai.expect(dao.data.courses).to.have.lengthOf(6);
       chai.expect(dao.findById(courseIdToDelete)).to.be.an.instanceOf(Course);
       dao.deleteById(courseIdToDelete);
-      chai.expect(dao.courses).to.have.lengthOf(5);
+      chai.expect(dao.data.courses).to.have.lengthOf(5);
       chai.expect(dao.findById(courseIdToDelete)).to.not.be.ok;
     });
     it('should return falsy if a course with the given id does not exist', () => {
@@ -196,9 +227,9 @@ describe('CourseMemoryDAO', () => {
       chai.expect(dao.deleteById(5555)).to.not.be.ok;
     });
     it('should not remove any courses from the courses array if a course with the given id is not found', () => {
-      chai.expect(dao.courses).to.have.lengthOf(5);
+      chai.expect(dao.data.courses).to.have.lengthOf(5);
       dao.deleteById(1234567);
-      chai.expect(dao.courses).to.have.lengthOf(5);
+      chai.expect(dao.data.courses).to.have.lengthOf(5);
     });
     it('should throw an error if a valid id is not passed in', () => {
       chai.expect(() => dao.deleteById()).to.throw('Delete requires a valid id');
