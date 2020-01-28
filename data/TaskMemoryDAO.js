@@ -1,4 +1,5 @@
 const Task = require('./Task');
+const InMemoryDataStore = require('./InMemoryDataStore');
 
 // meant to be private helper-methods
 const matchesCriteria = (task, criteria) => Object.keys(criteria).reduce((matching, key) => {
@@ -15,33 +16,32 @@ const validateUpdateTaskProps = (props = {}) => (props && props.id);
 // In-memory implementation
 class TaskMemoryDAO {
   constructor() {
-    this.tasks = [];
-    this.maxId = 0;
+    this.data = InMemoryDataStore;
   }
 
   find(criteria) {
     if (!criteria || Object.keys(criteria).length === 0) {
-      return this.tasks;
+      return this.data.tasks;
     }
-    return this.tasks.filter((task) => matchesCriteria(task, criteria));
+    return this.data.tasks.filter((task) => matchesCriteria(task, criteria));
   }
 
   findById(id) {
-    return this.tasks.find((task) => task.id === id);
+    return this.data.tasks.find((task) => task.id === id);
   }
 
   newTask(props) {
     if (!validateNewTaskProps(props)) return undefined;
-    this.maxId += 1;
+    this.data.maxTaskId += 1;
     const task = new Task(
-      this.maxId,
+      this.data.maxTaskId,
       props.title,
       props.courseId,
       props.deadline,
       props.completed,
       props.scheduledDate,
     );
-    this.tasks.push(task);
+    this.data.tasks.push(task);
     return task;
   }
 
@@ -59,9 +59,9 @@ class TaskMemoryDAO {
 
   // might be better to just have a deleted flag?
   deleteById(id) {
-    const taskIndex = this.tasks.findIndex((t) => t.id === id);
+    const taskIndex = this.data.tasks.findIndex((t) => t.id === id);
     if (taskIndex >= 0) {
-      return this.tasks.splice(taskIndex, 1)[0];
+      return this.data.tasks.splice(taskIndex, 1)[0];
     }
     return undefined;
   }
