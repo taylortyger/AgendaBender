@@ -201,7 +201,12 @@ describe('CourseMemoryDAO', () => {
       chai.expect(dao.courses).to.have.lengthOf(5);
     });
     it('should throw an error if a valid id is not passed in', () => {
-      chai.expect(dao.deleteById()).to.throw('');
+      chai.expect(() => dao.deleteById()).to.throw('Delete requires a valid id');
+      chai.expect(() => dao.deleteById({})).to.throw('Delete requires a valid id');
+      chai.expect(() => dao.deleteById('12')).to.throw('Delete requires a valid id');
+      chai.expect(() => dao.deleteById(12.5)).to.throw('Delete requires a valid id');
+      chai.expect(() => dao.deleteById(true)).to.throw('Delete requires a valid id');
+      chai.expect(() => dao.deleteById(false)).to.throw('Delete requires a valid id');
     });
   });
 });

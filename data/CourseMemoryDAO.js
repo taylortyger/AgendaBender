@@ -2,6 +2,7 @@ const Course = require('./Course');
 
 const validateTitle = (title) => (title && (typeof title === 'string' || title instanceof String));
 const validateUpdateCourseProps = (props) => (props && props.id && Number.isInteger(props.id));
+const validateDeleteId = (id) => (id && Number.isInteger(id));
 
 const matchesCriteria = (course, criteria) => Object.keys(criteria).reduce((matching, key) => {
   if (matching) return criteria[key] === course[key];
@@ -42,6 +43,7 @@ class CourseMemoryDAO {
   }
 
   deleteById(id) {
+    if (!validateDeleteId(id)) throw new Error('Delete requires a valid id');
     const courseIndex = this.courses.findIndex((t) => t.id === id);
     if (courseIndex >= 0) {
       return this.courses.splice(courseIndex, 1)[0];
