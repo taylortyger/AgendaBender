@@ -28,7 +28,7 @@ describe('In-Memory TaskDAO', () => {
   });
 
   describe('newTask()', () => {
-    it('should result in null if Task creation is unsuccessful (no props obj, or no title/course)', () => {
+    it('should result in falsy if Task creation is unsuccessful (no props obj, or no title/course)', () => {
       const dao = new TaskMemoryDAO();
       chai.assert.isNotOk(dao.newTask());
       chai.assert.isNotOk(dao.newTask(null));

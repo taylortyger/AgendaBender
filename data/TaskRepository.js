@@ -15,8 +15,8 @@ class TaskRepository {
     return this.dao.updateTask(props);
   }
 
-  getByCourse(course) {
-    return this.dao.find({}).filter((task) => task.course === course);
+  getByCourseId(courseId) {
+    return this.dao.find({}).filter((task) => task.courseId === courseId);
   }
 
   newTask(props) {
