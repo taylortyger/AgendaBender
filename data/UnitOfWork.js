@@ -7,8 +7,7 @@ const validateTaskTitle = (title) => (title && (typeof title === 'string' || tit
 const validateCourseId = (id) => (id && Number.isInteger(id));
 
 class UnitOfWork {
-  constructor(dbContext) {
-    this.dbContext = dbContext;
+  constructor() {
     this.taskRepo = new TaskRepository(new TaskMemoryDAO());
     this.courseRepo = new CourseRepository(new CourseMemoryDAO());
   }
