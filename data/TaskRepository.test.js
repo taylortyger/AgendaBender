@@ -10,14 +10,23 @@ const TaskRepository = require('./TaskRepository');
 
 describe('TaskRepository', () => {
   describe('getAll()', () => {
+    let repo;
+    beforeEach(() => {
+      repo = new TaskRepository(new TaskMemoryDAO());
+      repo.dao.data.clear();
+    });
+
+    afterEach(() => {
+      repo.dao.data.clear();
+    });
+
     it('should return an empty array if no tasks exist', () => {
-      const repo = new TaskRepository(new TaskMemoryDAO());
       const result = repo.getAll();
       chai.assert.isArray(result);
       chai.assert.lengthOf(result, 0);
+      repo.newTask({ title: 'Task 1', courseId: 1 });
     });
     it('should return an array of all tasks', () => {
-      const repo = new TaskRepository(new TaskMemoryDAO());
       repo.newTask({ title: 'Task 1', courseId: 1 });
       repo.newTask({ title: 'Task 2', courseId: 1 });
       repo.newTask({ title: 'Task 3', courseId: 1 });
@@ -28,8 +37,16 @@ describe('TaskRepository', () => {
     });
   });
   describe('getById()', () => {
+    let repo;
+    beforeEach(() => {
+      repo = new TaskRepository(new TaskMemoryDAO());
+      repo.dao.data.clear();
+    });
+
+    afterEach(() => {
+      repo.dao.data.clear();
+    });
     it('should return the task with the given id', () => {
-      const repo = new TaskRepository(new TaskMemoryDAO());
       repo.newTask({ title: 'Task 1', courseId: 1 });
       repo.newTask({ title: 'Task 2', courseId: 1 });
       repo.newTask({ title: 'Task 3', courseId: 1 });
@@ -40,7 +57,6 @@ describe('TaskRepository', () => {
       chai.assert.strictEqual(result.courseId, 4);
     });
     it('should return falsy if a task with the given id does not exist', () => {
-      const repo = new TaskRepository(new TaskMemoryDAO());
       chai.assert.isNotOk(repo.getById());
       chai.assert.isNotOk(repo.getById(10));
       chai.assert.isNotOk(repo.getById({}));
@@ -53,8 +69,16 @@ describe('TaskRepository', () => {
     });
   });
   describe('update()', () => {
+    let repo;
+    beforeEach(() => {
+      repo = new TaskRepository(new TaskMemoryDAO());
+      repo.dao.data.clear();
+    });
+
+    afterEach(() => {
+      repo.dao.data.clear();
+    });
     it('should return the updated task', () => {
-      const repo = new TaskRepository(new TaskMemoryDAO());
       repo.newTask({ title: 'Task 1', courseId: 1 });
       repo.newTask({ title: 'Task 2', courseId: 1 });
       repo.newTask({ title: 'Task 3', courseId: 1 });
@@ -64,7 +88,6 @@ describe('TaskRepository', () => {
       chai.assert.strictEqual(result.id, updateId);
     });
     it('should update any provided valid fields', () => {
-      const repo = new TaskRepository(new TaskMemoryDAO());
       repo.newTask({ title: 'Task 1', courseId: 1 });
       repo.newTask({ title: 'Task 2', courseId: 1 });
       repo.newTask({ title: 'Task 3', courseId: 1 });
@@ -76,7 +99,6 @@ describe('TaskRepository', () => {
       chai.assert.strictEqual(result.courseId, 5);
     });
     it('should return null if update is unsuccessful (no props object, no id field, task does not exist)', () => {
-      const repo = new TaskRepository(new TaskMemoryDAO());
       repo.newTask({ title: 'Task 1', courseId: 1 });
       repo.newTask({ title: 'Task 2', courseId: 1 });
       repo.newTask({ title: 'Task 3', courseId: 1 });
@@ -87,8 +109,16 @@ describe('TaskRepository', () => {
     });
   });
   describe('getByCourseId()', () => {
+    let repo;
+    beforeEach(() => {
+      repo = new TaskRepository(new TaskMemoryDAO());
+      repo.dao.data.clear();
+    });
+
+    afterEach(() => {
+      repo.dao.data.clear();
+    });
     it('should return an array of all tasks matching the provided course', () => {
-      const repo = new TaskRepository(new TaskMemoryDAO());
       repo.newTask({ title: 'Task 1', courseId: 1 });
       repo.newTask({ title: 'Task 2', courseId: 1 });
       repo.newTask({ title: 'Task 3', courseId: 1 });
@@ -105,7 +135,6 @@ describe('TaskRepository', () => {
       chai.assert.lengthOf(result, 3);
     });
     it('should return an empty array if no tasks match the course', () => {
-      const repo = new TaskRepository(new TaskMemoryDAO());
       chai.assert.isArray(repo.getByCourseId());
       chai.assert.isEmpty(repo.getByCourseId());
       chai.assert.isArray(repo.getByCourseId(1));
@@ -125,15 +154,22 @@ describe('TaskRepository', () => {
     });
   });
   describe('newTask()', () => {
+    let repo;
+    beforeEach(() => {
+      repo = new TaskRepository(new TaskMemoryDAO());
+      repo.dao.data.clear();
+    });
+
+    afterEach(() => {
+      repo.dao.data.clear();
+    });
     it('should return the created task', () => {
-      const repo = new TaskRepository(new TaskMemoryDAO());
       const result = repo.newTask({ title: 'new task', courseId: 1 });
       chai.assert.isOk(result);
       chai.assert.strictEqual(result.title, 'new task');
       chai.assert.strictEqual(result.courseId, 1);
     });
     it('should add the new task to the DAO', () => {
-      const repo = new TaskRepository(new TaskMemoryDAO());
       const newTask = repo.newTask({ title: 'new task', courseId: 1 });
       const result = repo.getById(newTask.id);
       chai.assert.isOk(result);
@@ -141,7 +177,6 @@ describe('TaskRepository', () => {
       chai.assert.strictEqual(result.courseId, 1);
     });
     it('should return falsy if task creation is unsuccessful', () => {
-      const repo = new TaskRepository(new TaskMemoryDAO());
       chai.assert.isNotOk(repo.newTask());
       chai.assert.isNotOk(repo.newTask({}));
       chai.assert.isNotOk(repo.newTask({ title: 'new task' }));
@@ -149,8 +184,16 @@ describe('TaskRepository', () => {
     });
   });
   describe('deleteById()', () => {
+    let repo;
+    beforeEach(() => {
+      repo = new TaskRepository(new TaskMemoryDAO());
+      repo.dao.data.clear();
+    });
+
+    afterEach(() => {
+      repo.dao.data.clear();
+    });
     it('should return the deleted task', () => {
-      const repo = new TaskRepository(new TaskMemoryDAO());
       repo.newTask({ title: 'Task 1', courseId: 1 });
       repo.newTask({ title: 'Task 2', courseId: 1 });
       repo.newTask({ title: 'Task 3', courseId: 1 });
@@ -162,7 +205,6 @@ describe('TaskRepository', () => {
       chai.assert.strictEqual(result.courseId, 1);
     });
     it('should remove the task with the given id from the DAO', () => {
-      const repo = new TaskRepository(new TaskMemoryDAO());
       repo.newTask({ title: 'Task 1', courseId: 1 });
       repo.newTask({ title: 'Task 2', courseId: 1 });
       repo.newTask({ title: 'Task 3', courseId: 1 });
@@ -172,7 +214,6 @@ describe('TaskRepository', () => {
       chai.assert.isNotOk(repo.getById(taskToDelete.id));
     });
     it('should return falsy if task deletion is unsuccessful (task not found, id not provided)', () => {
-      const repo = new TaskRepository(new TaskMemoryDAO());
       repo.newTask({ title: 'Task 1', courseId: 1 });
       repo.newTask({ title: 'Task 2', courseId: 1 });
       repo.newTask({ title: 'Task 3', courseId: 1 });

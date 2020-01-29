@@ -1,10 +1,16 @@
+const TaskMemoryDAO = require('./TaskMemoryDAO');
+const TaskRepository = require('./TaskRepository');
+const CourseMemoryDAO = require('./CourseMemoryDAO');
+const CourseRepository = require('./CourseRepository');
+
 const validateTaskTitle = (title) => (title && (typeof title === 'string' || title instanceof String));
 const validateCourseId = (id) => (id && Number.isInteger(id));
 
 class UnitOfWork {
-  constructor(taskRepo, courseRepo) {
-    this.taskRepo = taskRepo;
-    this.courseRepo = courseRepo;
+  constructor(dbContext) {
+    this.dbContext = dbContext;
+    this.taskRepo = new TaskRepository(new TaskMemoryDAO());
+    this.courseRepo = new CourseRepository(new CourseMemoryDAO());
   }
 
   createTask(title, courseId) {

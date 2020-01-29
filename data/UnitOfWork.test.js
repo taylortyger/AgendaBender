@@ -14,10 +14,8 @@ const CourseRepository = require('./CourseRepository');
 
 describe('UnitOfWork', () => {
   describe('constructor()', () => {
-    it('Should accept and set a TaskRepository and a CourseRepository', () => {
-      const taskRepo = new TaskRepository(new TaskMemoryDAO());
-      const courseRepo = new CourseRepository(new CourseMemoryDAO());
-      const uow = new UnitOfWork(taskRepo, courseRepo);
+    it('Should have acces to a TaskRepository and a CourseRepository', () => {
+      const uow = new UnitOfWork();
       chai.expect(uow.taskRepo).to.be.an.instanceOf(TaskRepository);
       chai.expect(uow.courseRepo).to.be.an.instanceOf(CourseRepository);
     });
@@ -26,9 +24,7 @@ describe('UnitOfWork', () => {
   describe('createTask()', () => {
     let uow;
     beforeEach(() => {
-      const taskRepo = new TaskRepository(new TaskMemoryDAO());
-      const courseRepo = new CourseRepository(new CourseMemoryDAO());
-      uow = new UnitOfWork(taskRepo, courseRepo);
+      uow = new UnitOfWork();
     });
 
     it('should create and return a task with a valid title and course id', () => {
