@@ -12,7 +12,7 @@ class CourseRepository {
   }
 
   update(props) {
-    return this.dao.updateTask(props);
+    return this.dao.updateCourse(props);
   }
 
   newCourse(title) {

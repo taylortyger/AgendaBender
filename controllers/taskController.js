@@ -1,23 +1,21 @@
 // eslint-disable-next-line prefer-destructuring
-const argv = require('yargs').argv;
-const TaskRepository = require('../data/TaskRepository');
-const TaskMemoryDAO = require('../data/TaskMemoryDAO');
-const seed = require('../dev/seed');
+// const argv = require('yargs').argv;
+// const seed = require('../dev/seed');
+const UnitOfWork = require('../data/UnitOfWork');
 
-const taskRepo = new TaskRepository(new TaskMemoryDAO());
-
+const uow = new UnitOfWork();
 // will this ever be called twice?
-if (process.env.NODE_ENV === 'development' && argv.seed) {
+/* if (process.env.NODE_ENV === 'development' && argv.seed) {
   console.log('seeding database...');
-  seed(taskRepo, argv.seed);
-}
+  seed(uow.taskRepo, argv.seed);
+} */
 
 const getAll = (req, res) => {
-  res.send(taskRepo.getAll());
+  res.send(uow.taskRepo.getAll());
 };
 
 const getByID = (req, res) => {
-  const task = taskRepo.getById(parseInt(req.params.id, 10));
+  const task = uow.taskRepo.getById(parseInt(req.params.id, 10));
   if (task) {
     res.send(task);
   } else {
@@ -26,11 +24,7 @@ const getByID = (req, res) => {
 };
 
 const create = (req, res) => {
-  res.json(taskRepo.newTask({
-    title: req.body.title,
-    course: req.body.course,
-    deadline: req.body.deadline,
-  }));
+  res.json(uow.createTask(req.body.title, parseInt(req.body.courseId, 10)));
 };
 
 const updateByID = (req, res) => {
@@ -42,7 +36,7 @@ const updateByID = (req, res) => {
     completed: req.body.completed,
     scheduledDate: req.body.scheduledDate,
   };
-  const task = taskRepo.update(props);
+  const task = uow.taskRepo.update(props);
   if (task) {
     res.send(task);
   } else {
@@ -51,7 +45,7 @@ const updateByID = (req, res) => {
 };
 
 const deleteByID = (req, res) => {
-  const deletedTask = taskRepo.deleteByID(parseInt(req.params.id, 10));
+  const deletedTask = uow.taskRepo.deleteByID(parseInt(req.params.id, 10));
   if (deletedTask) {
     res.send(deletedTask);
   } else {
