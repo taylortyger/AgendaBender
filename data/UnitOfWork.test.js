@@ -6,6 +6,7 @@ const chai = require('chai');
 
 const should = chai.should();
 const UnitOfWork = require('./UnitOfWork');
+const InMemoryDataStore = require('./InMemoryDataStore');
 const Task = require('./Task');
 const TaskMemoryDAO = require('./TaskMemoryDAO');
 const TaskRepository = require('./TaskRepository');
@@ -25,6 +26,11 @@ describe('UnitOfWork', () => {
     let uow;
     beforeEach(() => {
       uow = new UnitOfWork();
+      InMemoryDataStore.clear();
+    });
+
+    afterEach(() => {
+      InMemoryDataStore.clear();
     });
 
     it('should create and return a task with a valid title and course id', () => {

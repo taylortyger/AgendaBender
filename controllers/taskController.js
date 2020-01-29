@@ -1,14 +1,6 @@
-// eslint-disable-next-line prefer-destructuring
-// const argv = require('yargs').argv;
-// const seed = require('../dev/seed');
 const UnitOfWork = require('../data/UnitOfWork');
 
 const uow = new UnitOfWork();
-// will this ever be called twice?
-/* if (process.env.NODE_ENV === 'development' && argv.seed) {
-  console.log('seeding database...');
-  seed(uow.taskRepo, argv.seed);
-} */
 
 const getAll = (req, res) => {
   res.send(uow.taskRepo.getAll());
