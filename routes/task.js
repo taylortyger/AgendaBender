@@ -6,9 +6,9 @@ const router = express.Router();
 router.use(express.json());
 
 router.get('/', taskController.getAll);
-router.get('/:id', taskController.getByID);
+router.get('/:id', taskController.getById);
 router.post('/', taskController.create);
-router.post('/:id', taskController.updateByID);
-router.delete('/:id', taskController.deleteByID);
+router.post('/:id', taskController.updateById);
+router.delete('/:id', taskController.deleteById);
 
 module.exports = router;

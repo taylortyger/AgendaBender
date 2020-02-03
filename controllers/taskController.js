@@ -6,7 +6,7 @@ const getAll = (req, res) => {
   res.send(uow.taskRepo.getAll());
 };
 
-const getByID = (req, res) => {
+const getById = (req, res) => {
   const task = uow.taskRepo.getById(parseInt(req.params.id, 10));
   if (task) {
     res.send(task);
@@ -19,7 +19,7 @@ const create = (req, res) => {
   res.json(uow.createTask(req.body.title, parseInt(req.body.courseId, 10)));
 };
 
-const updateByID = (req, res) => {
+const updateById = (req, res) => {
   const props = {
     id: parseInt(req.params.id, 10),
     title: req.body.title,
@@ -36,8 +36,8 @@ const updateByID = (req, res) => {
   }
 };
 
-const deleteByID = (req, res) => {
-  const deletedTask = uow.taskRepo.deleteByID(parseInt(req.params.id, 10));
+const deleteById = (req, res) => {
+  const deletedTask = uow.taskRepo.deleteById(parseInt(req.params.id, 10));
   if (deletedTask) {
     res.send(deletedTask);
   } else {
@@ -47,8 +47,8 @@ const deleteByID = (req, res) => {
 
 module.exports = {
   getAll,
-  getByID,
+  getById,
   create,
-  updateByID,
-  deleteByID,
+  updateById,
+  deleteById,
 };
