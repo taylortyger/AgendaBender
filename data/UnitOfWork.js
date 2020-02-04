@@ -3,8 +3,8 @@ const TaskRepository = require('./TaskRepository');
 const CourseMemoryDAO = require('./CourseMemoryDAO');
 const CourseRepository = require('./CourseRepository');
 
-const validateTaskTitle = (title) => (title && (typeof title === 'string' || title instanceof String));
-const validateCourseId = (id) => (id && Number.isInteger(id));
+const validateTaskTitle = (title) => (title && typeof title === 'string');
+const validateCourseId = (id) => Number.isInteger(id);
 
 class UnitOfWork {
   constructor() {

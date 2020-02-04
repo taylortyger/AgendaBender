@@ -1,9 +1,9 @@
 const Course = require('./Course');
 const InMemoryDataStore = require('./InMemoryDataStore');
 
-const validateTitle = (title) => (title && (typeof title === 'string' || title instanceof String));
-const validateUpdateCourseProps = (props) => (props && props.id && Number.isInteger(props.id));
-const validateDeleteId = (id) => (id && Number.isInteger(id));
+const validateTitle = (title) => (title && typeof title === 'string');
+const validateUpdateCourseProps = (props) => (props && Number.isInteger(props.id));
+const validateDeleteId = (id) => Number.isInteger(id);
 
 const matchesCriteria = (course, criteria) => Object.keys(criteria).reduce((matching, key) => {
   if (matching) return criteria[key] === course[key];

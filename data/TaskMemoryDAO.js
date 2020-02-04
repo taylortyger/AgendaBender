@@ -9,7 +9,6 @@ const matchesCriteria = (task, criteria) => Object.keys(criteria).reduce((matchi
 
 const validateNewTaskProps = (props = {}) => (props
                                               && props.title
-                                              && props.courseId
                                               && Number.isInteger(props.courseId));
 const validateUpdateTaskProps = (props = {}) => (props && props.id);
 
