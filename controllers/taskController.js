@@ -1,13 +1,13 @@
 const UnitOfWork = require('../data/UnitOfWork');
 
-const uow = new UnitOfWork();
+const unitOfWork = new UnitOfWork();
 
 const getAll = (req, res) => {
-  res.send(uow.taskRepo.getAll());
+  res.send(unitOfWork.taskRepo.getAll());
 };
 
 const getById = (req, res) => {
-  const task = uow.taskRepo.getById(parseInt(req.params.id, 10));
+  const task = unitOfWork.taskRepo.getById(parseInt(req.params.id, 10));
   if (task) {
     res.send(task);
   } else {
@@ -16,7 +16,7 @@ const getById = (req, res) => {
 };
 
 const create = (req, res) => {
-  res.json(uow.createTask(req.body.title, parseInt(req.body.courseId, 10)));
+  res.json(unitOfWork.createTask(req.body.title, parseInt(req.body.courseId, 10)));
 };
 
 const updateById = (req, res) => {
@@ -28,7 +28,7 @@ const updateById = (req, res) => {
     completed: req.body.completed,
     scheduledDate: req.body.scheduledDate,
   };
-  const task = uow.taskRepo.update(props);
+  const task = unitOfWork.taskRepo.update(props);
   if (task) {
     res.send(task);
   } else {
@@ -37,7 +37,7 @@ const updateById = (req, res) => {
 };
 
 const deleteById = (req, res) => {
-  const deletedTask = uow.taskRepo.deleteById(parseInt(req.params.id, 10));
+  const deletedTask = unitOfWork.taskRepo.deleteById(parseInt(req.params.id, 10));
   if (deletedTask) {
     res.send(deletedTask);
   } else {

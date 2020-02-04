@@ -1,13 +1,13 @@
 const UnitOfWork = require('../data/UnitOfWork');
 
-const uow = new UnitOfWork();
+const unitOfwork = new UnitOfWork();
 
 const getAll = (req, res) => {
-  res.send(uow.courseRepo.getAll());
+  res.send(unitOfwork.courseRepo.getAll());
 };
 
 const getById = (req, res) => {
-  const course = uow.courseRepo.getById(parseInt(req.params.id, 10));
+  const course = unitOfwork.courseRepo.getById(parseInt(req.params.id, 10));
   if (course) {
     res.send(course);
   } else {
@@ -16,7 +16,7 @@ const getById = (req, res) => {
 };
 
 const create = (req, res) => {
-  res.json(uow.courseRepo.newCourse(req.body.title));
+  res.json(unitOfwork.courseRepo.newCourse(req.body.title));
 };
 
 const updateById = (req, res) => {
@@ -24,7 +24,7 @@ const updateById = (req, res) => {
     id: parseInt(req.params.id, 10),
     title: req.body.title,
   };
-  const course = uow.courseRepo.update(props);
+  const course = unitOfwork.courseRepo.update(props);
   if (course) {
     res.send(course);
   } else {
@@ -33,7 +33,7 @@ const updateById = (req, res) => {
 };
 
 const deleteById = (req, res) => {
-  const deletedCourse = uow.courseRepo.deleteById(parseInt(req.params.id, 10));
+  const deletedCourse = unitOfwork.courseRepo.deleteById(parseInt(req.params.id, 10));
   if (deletedCourse) {
     res.send(deletedCourse);
   } else {
