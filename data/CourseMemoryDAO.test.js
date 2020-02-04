@@ -129,6 +129,7 @@ describe('CourseMemoryDAO', () => {
   });
   describe('updateCourse', () => {
     let dao;
+
     beforeEach(() => {
       dao = new CourseMemoryDAO();
       dao.data.clear();
@@ -152,6 +153,7 @@ describe('CourseMemoryDAO', () => {
       expect(result).to.be.an.instanceOf(Course);
       expect(result.id).to.equal(2);
     });
+
     it('should return falsy if the course is not found', () => {
       let result = dao.updateCourse({ id: 123456, title: 'NOTEXIST123' });
       expect(result).to.not.be.ok;
@@ -159,6 +161,7 @@ describe('CourseMemoryDAO', () => {
       result = dao.updateCourse({ id: 999999, title: 'NOTEXIST123' });
       expect(result).to.not.be.ok;
     });
+
     it('should update the provided course properties (title) for the given course id', () => {
       let result = dao.updateCourse({ id: 1, title: 'NEWCOURSE1' });
       expect(result).to.be.an.instanceOf(Course);
@@ -175,6 +178,7 @@ describe('CourseMemoryDAO', () => {
       expect(result.id).to.equal(3);
       expect(result.title).to.equal('NEWCOURSE3');
     });
+
     it('should throw an error if a valid course id is not provided in the props object', () => {
       expect(() => dao.updateCourse()).to.throw('Updating requires a valid course id');
       expect(() => dao.updateCourse({})).to.throw('Updating requires a valid course id');
@@ -188,6 +192,7 @@ describe('CourseMemoryDAO', () => {
   });
   describe('deleteById()', () => {
     let dao;
+
     beforeEach(() => {
       dao = new CourseMemoryDAO();
       dao.data.clear();
@@ -209,6 +214,7 @@ describe('CourseMemoryDAO', () => {
       expect(result.id).to.equal(courseIdToDelete);
       expect(result.title).to.equal('DEL123');
     });
+
     it('should remove the course from the courses array', () => {
       const courseIdToDelete = dao.newCourse('DEL123').id;
       expect(dao.data.courses).to.have.lengthOf(6);
@@ -217,15 +223,18 @@ describe('CourseMemoryDAO', () => {
       expect(dao.data.courses).to.have.lengthOf(5);
       expect(dao.findById(courseIdToDelete)).to.not.be.ok;
     });
+
     it('should return falsy if a course with the given id does not exist', () => {
       expect(dao.deleteById(100)).to.not.be.ok;
       expect(dao.deleteById(5555)).to.not.be.ok;
     });
+
     it('should not remove any courses from the courses array if a course with the given id is not found', () => {
       expect(dao.data.courses).to.have.lengthOf(5);
       dao.deleteById(1234567);
       expect(dao.data.courses).to.have.lengthOf(5);
     });
+
     it('should throw an error if a valid id is not passed in', () => {
       expect(() => dao.deleteById()).to.throw('Delete requires a valid id');
       expect(() => dao.deleteById({})).to.throw('Delete requires a valid id');

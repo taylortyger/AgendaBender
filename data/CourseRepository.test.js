@@ -169,7 +169,7 @@ describe('CourseRepository', () => {
       expect(() => courseRepo.deleteById(false)).to.throw('Delete requires a valid id');
       expect(() => courseRepo.deleteById(undefined)).to.throw('Delete requires a valid id');
     });
-    
+
     it('should return falsy if a course with id does not exist', () => {
       let result = courseRepo.deleteById(-1);
       expect(result).to.not.be.ok;

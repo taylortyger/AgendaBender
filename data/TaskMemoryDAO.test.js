@@ -96,6 +96,7 @@ describe('In-Memory TaskDAO', () => {
   describe('Querying', () => {
     describe('find()', () => {
       let dao;
+
       beforeEach(() => {
         dao = new TaskMemoryDAO();
         dao.data.clear();
@@ -113,6 +114,7 @@ describe('In-Memory TaskDAO', () => {
         assert.lengthOf(dao.find({}), 10);
         assert.lengthOf(dao.find(null), 10);
       });
+
       it('returns an array of all tasks that exactly match single-attribute criteria', () => {
         dao.newTask({ title: 'task1', courseId: 5, completed: true });
         dao.newTask({ title: 'task2', courseId: 4 });
@@ -137,6 +139,7 @@ describe('In-Memory TaskDAO', () => {
         assert.isArray(result);
         assert.lengthOf(result, 5);
       });
+
       it('returns an array of all tasks that exactly match multi-attribute criteria', () => {
         dao.newTask({ title: 'task1', courseId: 5, completed: true });
         dao.newTask({ title: 'task2', courseId: 4 });
@@ -164,6 +167,7 @@ describe('In-Memory TaskDAO', () => {
         assert.isArray(result);
         assert.lengthOf(result, 1);
       });
+
       it('returns an empty array if no tasks exactly match all the criteria', () => {
         dao.newTask({ title: 'task1', courseId: 5, completed: true });
         dao.newTask({ title: 'task2', courseId: 4 });
@@ -193,6 +197,7 @@ describe('In-Memory TaskDAO', () => {
         assert.isEmpty(result);
       });
     });
+
     describe('findById()', () => {
       let dao;
       beforeEach(() => {
@@ -220,6 +225,7 @@ describe('In-Memory TaskDAO', () => {
         expect(resultTask).to.be.ok;
         expect(resultTask).to.be.deep.equal(resultTask);
       });
+
       it('returns falsy value if a task with the given id does not exist in the tasks array', () => {
         // no tasks added yet
         expect(dao.findById(50)).to.not.be.ok;
@@ -236,8 +242,10 @@ describe('In-Memory TaskDAO', () => {
       });
     });
   });
+
   describe('updateTask()', () => {
     let dao;
+
     beforeEach(() => {
       dao = new TaskMemoryDAO();
       dao.data.clear();
@@ -278,6 +286,7 @@ describe('In-Memory TaskDAO', () => {
       assert.strictEqual(updatedTask.id, props.id);
       assert.strictEqual(updatedTask.courseId, 4);
     });
+
     it('should not change properties that are not provided in props object', () => {
       let newTask = dao.newTask({ title: 'some task', courseId: 1 });
       let expected = {
@@ -313,6 +322,7 @@ describe('In-Memory TaskDAO', () => {
       assert.strictEqual(updatedTask.completed, expected.completed);
       assert.strictEqual(updatedTask.deadline, expected.deadline);
     });
+
     it('should return falsy value if props object parameter is not valid (non existent, empty, or no id)', () => {
       const propsNoId = { title: 'new title', courseId: 'new course', completed: true };
       const nonExistentId = 5555;
@@ -335,6 +345,7 @@ describe('In-Memory TaskDAO', () => {
   });
   describe('deleteById()', () => {
     let dao;
+
     beforeEach(() => {
       dao = new TaskMemoryDAO();
       dao.data.clear();
@@ -357,6 +368,7 @@ describe('In-Memory TaskDAO', () => {
       const stillExists = dao.data.tasks.reduce((res, task) => res || (task.id === deleteId), false);
       assert.isFalse(stillExists, 'A task with the deleteId still exists in the tasks array');
     });
+
     it('should not delete any tasks if a task with the given id does not exist', () => {
       dao.newTask({ title: 'task 1', courseId: 1 });
       dao.newTask({ title: 'task 1', courseId: 1 });
@@ -367,6 +379,7 @@ describe('In-Memory TaskDAO', () => {
       dao.deleteById(nonExistentId);
       assert.lengthOf(dao.data.tasks, 3);
     });
+
     it('should return the deleted task', () => {
       dao.newTask({ title: 'task 1', courseId: 1 });
       dao.newTask({ title: 'task 1', courseId: 1 });
@@ -379,6 +392,7 @@ describe('In-Memory TaskDAO', () => {
       assert.strictEqual(deletedTask.title, 'task to delete');
       assert.strictEqual(deletedTask.courseId, 1);
     });
+
     it('should return falsy value if no task with the given id is found', () => {
       assert.isNotOk(dao.deleteById());
       assert.isNotOk(dao.deleteById(5555));

@@ -7,6 +7,7 @@ const TaskRepository = require('./TaskRepository');
 describe('TaskRepository', () => {
   describe('getAll()', () => {
     let repo;
+
     beforeEach(() => {
       repo = new TaskRepository(new TaskMemoryDAO());
       repo.dao.data.clear();
@@ -22,6 +23,7 @@ describe('TaskRepository', () => {
       assert.lengthOf(result, 0);
       repo.newTask({ title: 'Task 1', courseId: 1 });
     });
+
     it('should return an array of all tasks', () => {
       repo.newTask({ title: 'Task 1', courseId: 1 });
       repo.newTask({ title: 'Task 2', courseId: 1 });
@@ -32,8 +34,10 @@ describe('TaskRepository', () => {
       assert.lengthOf(result, 4);
     });
   });
+
   describe('getById()', () => {
     let repo;
+
     beforeEach(() => {
       repo = new TaskRepository(new TaskMemoryDAO());
       repo.dao.data.clear();
@@ -42,6 +46,7 @@ describe('TaskRepository', () => {
     afterEach(() => {
       repo.dao.data.clear();
     });
+
     it('should return the task with the given id', () => {
       repo.newTask({ title: 'Task 1', courseId: 1 });
       repo.newTask({ title: 'Task 2', courseId: 1 });
@@ -52,6 +57,7 @@ describe('TaskRepository', () => {
       assert.strictEqual(result.title, 'Task 4');
       assert.strictEqual(result.courseId, 4);
     });
+
     it('should return falsy if a task with the given id does not exist', () => {
       assert.isNotOk(repo.getById());
       assert.isNotOk(repo.getById(10));
@@ -64,8 +70,10 @@ describe('TaskRepository', () => {
       assert.isNotOk(repo.getById({ id: 10 }));
     });
   });
+
   describe('update()', () => {
     let repo;
+
     beforeEach(() => {
       repo = new TaskRepository(new TaskMemoryDAO());
       repo.dao.data.clear();
@@ -74,6 +82,7 @@ describe('TaskRepository', () => {
     afterEach(() => {
       repo.dao.data.clear();
     });
+
     it('should return the updated task', () => {
       repo.newTask({ title: 'Task 1', courseId: 1 });
       repo.newTask({ title: 'Task 2', courseId: 1 });
@@ -83,6 +92,7 @@ describe('TaskRepository', () => {
       assert.isOk(result);
       assert.strictEqual(result.id, updateId);
     });
+
     it('should update any provided valid fields', () => {
       repo.newTask({ title: 'Task 1', courseId: 1 });
       repo.newTask({ title: 'Task 2', courseId: 1 });
@@ -94,7 +104,8 @@ describe('TaskRepository', () => {
       assert.strictEqual(result.title, 'new title');
       assert.strictEqual(result.courseId, 5);
     });
-    it('should return null if update is unsuccessful (no props object, no id field, task does not exist)', () => {
+
+    it('should return falsy if update is unsuccessful (no props object, no id field, task does not exist)', () => {
       repo.newTask({ title: 'Task 1', courseId: 1 });
       repo.newTask({ title: 'Task 2', courseId: 1 });
       repo.newTask({ title: 'Task 3', courseId: 1 });
@@ -106,6 +117,7 @@ describe('TaskRepository', () => {
   });
   describe('getByCourseId()', () => {
     let repo;
+
     beforeEach(() => {
       repo = new TaskRepository(new TaskMemoryDAO());
       repo.dao.data.clear();
@@ -114,6 +126,7 @@ describe('TaskRepository', () => {
     afterEach(() => {
       repo.dao.data.clear();
     });
+
     it('should return an array of all tasks matching the provided course', () => {
       repo.newTask({ title: 'Task 1', courseId: 1 });
       repo.newTask({ title: 'Task 2', courseId: 1 });
@@ -130,6 +143,7 @@ describe('TaskRepository', () => {
       assert.isArray(result);
       assert.lengthOf(result, 3);
     });
+
     it('should return an empty array if no tasks match the course', () => {
       assert.isArray(repo.getByCourseId());
       assert.isEmpty(repo.getByCourseId());
@@ -149,8 +163,10 @@ describe('TaskRepository', () => {
       assert.isEmpty(repo.getByCourseId(777));
     });
   });
+
   describe('newTask()', () => {
     let repo;
+
     beforeEach(() => {
       repo = new TaskRepository(new TaskMemoryDAO());
       repo.dao.data.clear();
@@ -159,12 +175,14 @@ describe('TaskRepository', () => {
     afterEach(() => {
       repo.dao.data.clear();
     });
+
     it('should return the created task', () => {
       const result = repo.newTask({ title: 'new task', courseId: 1 });
       assert.isOk(result);
       assert.strictEqual(result.title, 'new task');
       assert.strictEqual(result.courseId, 1);
     });
+
     it('should add the new task to the DAO', () => {
       const newTask = repo.newTask({ title: 'new task', courseId: 1 });
       const result = repo.getById(newTask.id);
@@ -172,6 +190,7 @@ describe('TaskRepository', () => {
       assert.strictEqual(result.title, 'new task');
       assert.strictEqual(result.courseId, 1);
     });
+
     it('should return falsy if task creation is unsuccessful', () => {
       assert.isNotOk(repo.newTask());
       assert.isNotOk(repo.newTask({}));
@@ -179,8 +198,10 @@ describe('TaskRepository', () => {
       assert.isNotOk(repo.newTask({ courseId: 1 }));
     });
   });
+
   describe('deleteById()', () => {
     let repo;
+
     beforeEach(() => {
       repo = new TaskRepository(new TaskMemoryDAO());
       repo.dao.data.clear();
@@ -189,6 +210,7 @@ describe('TaskRepository', () => {
     afterEach(() => {
       repo.dao.data.clear();
     });
+
     it('should return the deleted task', () => {
       repo.newTask({ title: 'Task 1', courseId: 1 });
       repo.newTask({ title: 'Task 2', courseId: 1 });
@@ -200,6 +222,7 @@ describe('TaskRepository', () => {
       assert.strictEqual(result.title, 'Task 4');
       assert.strictEqual(result.courseId, 1);
     });
+
     it('should remove the task with the given id from the DAO', () => {
       repo.newTask({ title: 'Task 1', courseId: 1 });
       repo.newTask({ title: 'Task 2', courseId: 1 });
@@ -209,6 +232,7 @@ describe('TaskRepository', () => {
       const result = repo.deleteById(taskToDelete.id);
       assert.isNotOk(repo.getById(taskToDelete.id));
     });
+
     it('should return falsy if task deletion is unsuccessful (task not found, id not provided)', () => {
       repo.newTask({ title: 'Task 1', courseId: 1 });
       repo.newTask({ title: 'Task 2', courseId: 1 });
