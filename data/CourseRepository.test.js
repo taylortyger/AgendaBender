@@ -16,7 +16,6 @@ describe('CourseRepository', () => {
 
   describe('getAll', () => {
     const courseRepo = new CourseRepository(new CourseMemoryDAO());
-    InMemoryDataStore.clear();
 
     afterEach(() => {
       InMemoryDataStore.clear();
@@ -38,7 +37,6 @@ describe('CourseRepository', () => {
 
   describe('getById', () => {
     const courseRepo = new CourseRepository(new CourseMemoryDAO());
-    InMemoryDataStore.clear();
 
     beforeEach(() => {
       courseRepo.newCourse('Course 1');
@@ -66,7 +64,6 @@ describe('CourseRepository', () => {
 
   describe('update', () => {
     const courseRepo = new CourseRepository(new CourseMemoryDAO());
-    InMemoryDataStore.clear();
 
     beforeEach(() => {
       courseRepo.newCourse('Course 1');
@@ -105,7 +102,6 @@ describe('CourseRepository', () => {
 
   describe('newCourse', () => {
     const courseRepo = new CourseRepository(new CourseMemoryDAO());
-    InMemoryDataStore.clear();
 
     afterEach(() => {
       InMemoryDataStore.clear();
@@ -135,7 +131,6 @@ describe('CourseRepository', () => {
 
   describe('deleteById', () => {
     const courseRepo = new CourseRepository(new CourseMemoryDAO());
-    InMemoryDataStore.clear();
 
     beforeEach(() => {
       courseRepo.newCourse('Course 1');

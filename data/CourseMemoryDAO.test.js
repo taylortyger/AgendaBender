@@ -22,7 +22,6 @@ describe('CourseMemoryDAO', () => {
     let dao;
     beforeEach(() => {
       dao = new CourseMemoryDAO();
-      dao.data.clear();
     });
 
     afterEach(() => {
@@ -62,7 +61,6 @@ describe('CourseMemoryDAO', () => {
     let dao;
     beforeEach(() => {
       dao = new CourseMemoryDAO();
-      dao.data.clear();
       dao.newCourse('COURSE1');
       dao.newCourse('COURSE2');
       dao.newCourse('COURSE3');
@@ -98,7 +96,6 @@ describe('CourseMemoryDAO', () => {
 
     beforeEach(() => {
       dao = new CourseMemoryDAO();
-      dao.data.clear();
       dao.newCourse('COURSE1');
       dao.newCourse('COURSE2');
       dao.newCourse('COURSE3');
@@ -132,7 +129,6 @@ describe('CourseMemoryDAO', () => {
 
     beforeEach(() => {
       dao = new CourseMemoryDAO();
-      dao.data.clear();
       dao.newCourse('COURSE1');
       dao.newCourse('COURSE2');
       dao.newCourse('COURSE3');
@@ -195,7 +191,6 @@ describe('CourseMemoryDAO', () => {
 
     beforeEach(() => {
       dao = new CourseMemoryDAO();
-      dao.data.clear();
       dao.newCourse('COURSE1');
       dao.newCourse('COURSE2');
       dao.newCourse('COURSE3');

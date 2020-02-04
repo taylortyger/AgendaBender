@@ -21,7 +21,6 @@ describe('In-Memory TaskDAO', () => {
     let dao;
     beforeEach(() => {
       dao = new TaskMemoryDAO();
-      dao.data.clear();
     });
 
     afterEach(() => {
@@ -99,7 +98,6 @@ describe('In-Memory TaskDAO', () => {
 
       beforeEach(() => {
         dao = new TaskMemoryDAO();
-        dao.data.clear();
       });
 
       afterEach(() => {
@@ -202,7 +200,6 @@ describe('In-Memory TaskDAO', () => {
       let dao;
       beforeEach(() => {
         dao = new TaskMemoryDAO();
-        dao.data.clear();
       });
 
       afterEach(() => {
@@ -248,7 +245,6 @@ describe('In-Memory TaskDAO', () => {
 
     beforeEach(() => {
       dao = new TaskMemoryDAO();
-      dao.data.clear();
     });
 
     afterEach(() => {
@@ -348,7 +344,6 @@ describe('In-Memory TaskDAO', () => {
 
     beforeEach(() => {
       dao = new TaskMemoryDAO();
-      dao.data.clear();
     });
 
     afterEach(() => {

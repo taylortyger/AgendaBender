@@ -20,7 +20,6 @@ describe('UnitOfWork', () => {
     let unitOfWork;
     beforeEach(() => {
       unitOfWork = new UnitOfWork();
-      InMemoryDataStore.clear();
     });
 
     afterEach(() => {

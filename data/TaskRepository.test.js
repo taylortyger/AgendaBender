@@ -10,7 +10,6 @@ describe('TaskRepository', () => {
 
     beforeEach(() => {
       repo = new TaskRepository(new TaskMemoryDAO());
-      repo.dao.data.clear();
     });
 
     afterEach(() => {
@@ -40,7 +39,6 @@ describe('TaskRepository', () => {
 
     beforeEach(() => {
       repo = new TaskRepository(new TaskMemoryDAO());
-      repo.dao.data.clear();
     });
 
     afterEach(() => {
@@ -76,7 +74,6 @@ describe('TaskRepository', () => {
 
     beforeEach(() => {
       repo = new TaskRepository(new TaskMemoryDAO());
-      repo.dao.data.clear();
     });
 
     afterEach(() => {
@@ -120,7 +117,6 @@ describe('TaskRepository', () => {
 
     beforeEach(() => {
       repo = new TaskRepository(new TaskMemoryDAO());
-      repo.dao.data.clear();
     });
 
     afterEach(() => {
@@ -169,7 +165,6 @@ describe('TaskRepository', () => {
 
     beforeEach(() => {
       repo = new TaskRepository(new TaskMemoryDAO());
-      repo.dao.data.clear();
     });
 
     afterEach(() => {
@@ -204,7 +199,6 @@ describe('TaskRepository', () => {
 
     beforeEach(() => {
       repo = new TaskRepository(new TaskMemoryDAO());
-      repo.dao.data.clear();
     });
 
     afterEach(() => {
