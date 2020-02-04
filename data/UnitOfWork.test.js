@@ -36,11 +36,11 @@ describe('UnitOfWork', () => {
     });
 
     it('should not allow a task to be created if the given courseId does not exist', () => {
-      expect(() => unitOfWork.createTask('My Task', 5)).to.throw('A course with the given courseId does not exist');
+      expect(() => unitOfWork.createTask('My Task', 5)).to.throw('A course with id 5 does not exist');
       unitOfWork.courseRepo.newCourse('My Course 1');
       unitOfWork.courseRepo.newCourse('My Course 2');
       unitOfWork.courseRepo.newCourse('My Course 3');
-      expect(() => unitOfWork.createTask('My Task', -1)).to.throw('A course with the given courseId does not exist');
+      expect(() => unitOfWork.createTask('My Task', -1)).to.throw('A course with id -1 does not exist');
     });
 
     it('should not allow a task to be created with invalid input', () => {

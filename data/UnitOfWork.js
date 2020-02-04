@@ -18,7 +18,7 @@ class UnitOfWork {
     }
     const course = this.courseRepo.getById(courseId);
     if (!course) {
-      throw new Error('A course with the given courseId does not exist');
+      throw new Error(`A course with id ${courseId} does not exist`);
     }
     return this.taskRepo.newTask({ title, courseId });
   }
