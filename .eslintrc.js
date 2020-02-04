@@ -15,5 +15,17 @@ module.exports = {
     ecmaVersion: 2018,
   },
   rules: {
+    'prefer-destructuring': 'off',
   },
+  overrides: [
+    {
+      files: ['*.test.js'],
+      rules: {
+        'no-plusplus': 'off',
+        'no-unused-expressions': 'off',
+        'no-unused-vars': 'off',
+        'no-undef': 'off',
+      }
+    }
+  ],
 };

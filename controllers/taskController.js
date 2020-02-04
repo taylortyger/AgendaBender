@@ -1,23 +1,13 @@
-// eslint-disable-next-line prefer-destructuring
-const argv = require('yargs').argv;
-const TaskRepository = require('../data/TaskRepository');
-const TaskMemoryDAO = require('../data/TaskMemoryDAO');
-const seed = require('../dev/seed');
+const UnitOfWork = require('../data/UnitOfWork');
 
-const taskRepo = new TaskRepository(new TaskMemoryDAO());
-
-// will this ever be called twice?
-if (process.env.NODE_ENV === 'development' && argv.seed) {
-  console.log('seeding database...');
-  seed(taskRepo, argv.seed);
-}
+const unitOfWork = new UnitOfWork();
 
 const getAll = (req, res) => {
-  res.send(taskRepo.getAll());
+  res.send(unitOfWork.taskRepo.getAll());
 };
 
-const getByID = (req, res) => {
-  const task = taskRepo.getByID(parseInt(req.params.id, 10));
+const getById = (req, res) => {
+  const task = unitOfWork.taskRepo.getById(parseInt(req.params.id, 10));
   if (task) {
     res.send(task);
   } else {
@@ -26,14 +16,10 @@ const getByID = (req, res) => {
 };
 
 const create = (req, res) => {
-  res.json(taskRepo.newTask({
-    title: req.body.title,
-    course: req.body.course,
-    deadline: req.body.deadline,
-  }));
+  res.json(unitOfWork.createTask(req.body.title, parseInt(req.body.courseId, 10)));
 };
 
-const updateByID = (req, res) => {
+const updateById = (req, res) => {
   const props = {
     id: parseInt(req.params.id, 10),
     title: req.body.title,
@@ -42,7 +28,7 @@ const updateByID = (req, res) => {
     completed: req.body.completed,
     scheduledDate: req.body.scheduledDate,
   };
-  const task = taskRepo.update(props);
+  const task = unitOfWork.taskRepo.update(props);
   if (task) {
     res.send(task);
   } else {
@@ -50,8 +36,8 @@ const updateByID = (req, res) => {
   }
 };
 
-const deleteByID = (req, res) => {
-  const deletedTask = taskRepo.deleteByID(parseInt(req.params.id, 10));
+const deleteById = (req, res) => {
+  const deletedTask = unitOfWork.taskRepo.deleteById(parseInt(req.params.id, 10));
   if (deletedTask) {
     res.send(deletedTask);
   } else {
@@ -61,8 +47,8 @@ const deleteByID = (req, res) => {
 
 module.exports = {
   getAll,
-  getByID,
+  getById,
   create,
-  updateByID,
-  deleteByID,
+  updateById,
+  deleteById,
 };
