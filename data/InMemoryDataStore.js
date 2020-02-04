@@ -1,4 +1,4 @@
-function data() {
+function dataStore() {
   const that = {
     tasks: [],
     courses: [],
@@ -14,6 +14,5 @@ function data() {
   return that;
 }
 
-const dataStore = data();
 
-module.exports = dataStore;
+module.exports = dataStore();

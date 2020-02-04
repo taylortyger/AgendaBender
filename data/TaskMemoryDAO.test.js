@@ -1,8 +1,3 @@
-/* eslint-disable no-unused-expressions */
-/* eslint-disable no-plusplus */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-undef */
-
 const chai = require('chai');
 
 const { assert, expect } = chai;
