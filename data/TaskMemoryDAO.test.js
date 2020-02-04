@@ -13,12 +13,12 @@ describe('In-Memory TaskDAO', () => {
   describe('constructor()', () => {
     it('should have access to the in-memory data store', () => {
       const dao = new TaskMemoryDAO();
-      expect(dao.data).to.be.equal(InMemoryDataStore);
+      expect(dao.data).to.deep.equal(InMemoryDataStore);
     });
 
     it('should not be influenced by params', () => {
       const dao = new TaskMemoryDAO(8, 'some string', false);
-      expect(dao.data).to.be.equal(InMemoryDataStore);
+      expect(dao.data).to.deep.equal(InMemoryDataStore);
     });
   });
 

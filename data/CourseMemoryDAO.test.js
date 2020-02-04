@@ -15,12 +15,12 @@ describe('CourseMemoryDAO', () => {
   describe('construction', () => {
     it('Should initialize with access to the in-memory data store object', () => {
       const dao = new CourseMemoryDAO();
-      expect(dao.data).to.be.equal(InMemoryDataStore);
+      expect(dao.data).to.deep.equal(InMemoryDataStore);
     });
 
     it('Should not be affected by parameters', () => {
       const dao = new CourseMemoryDAO([1, 2, 3], false, 'test');
-      expect(dao.data).to.be.equal(InMemoryDataStore);
+      expect(dao.data).to.deep.equal(InMemoryDataStore);
     });
   });
   describe('newCourse()', () => {
